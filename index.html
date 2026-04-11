@@ -1294,11 +1294,11 @@ function initScratch() {
     const pos = getPos(e);
     ctx.globalCompositeOperation = 'destination-out';
     ctx.beginPath();
-    ctx.arc(pos.x, pos.y, 28, 0, Math.PI * 2);
+    ctx.arc(pos.x, pos.y, 45, 0, Math.PI * 2); // Increased brush size for faster clearing
     ctx.fill();
     // check reveal %
     revealed++;
-    if (revealed % 15 === 0) checkReveal(ctx, canvas);
+    if (revealed % 5 === 0) checkReveal(ctx, canvas); // Check more frequently
   }
 
   canvas.addEventListener('mousedown',  e => { isDrawing = true; scratch(e); });
@@ -1315,11 +1315,29 @@ function checkReveal(ctx, canvas) {
   let cleared = 0;
   for (let i = 3; i < data.length; i += 4) { if (data[i] === 0) cleared++; }
   const pct = cleared / (canvas.width * canvas.height);
-  if (pct > 0.12) {
+  
+  // Trigger after just ~3-5% is cleared (approx 4-5 rubs)
+  if (pct > 0.03) {
     scratchDone = true;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    confettiBurst(50);
-    spawnFloaters(3, 14);
+    
+    // Smoothly fade out the canvas then remove it
+    canvas.style.transition = 'opacity 0.4s ease';
+    canvas.style.opacity = '0';
+    setTimeout(() => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.remove();
+    }, 400);
+
+    // UNMUTE and Play video for the surprise!
+    const vid = document.getElementById('pg3Video');
+    if (vid) {
+      vid.muted = false;
+      vid.volume = 1;
+      vid.play().catch(() => {});
+    }
+
+    confettiBurst(55);
+    spawnFloaters(3, 15);
   }
 }
 
