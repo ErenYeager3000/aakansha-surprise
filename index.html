@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Aakansha 🌸">
+<meta name="theme-color" content="#0d0008">
+<link rel="manifest" href="manifest.json">
+<title>Happy Birthday Aakansha 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,700&family=Cormorant+Garamond:ital,wght@1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: #0d0008;
+    font-family: 'Outfit', -apple-system, sans-serif;
+  }
+
+  #app {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── PAGES ── */
+  .page {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: env(safe-area-inset-top, 24px) 20px env(safe-area-inset-bottom, 24px);
+    opacity: 0; pointer-events: none; transition: opacity 0.5s ease; overflow: hidden;
+  }
+  .page.active { opacity: 1; pointer-events: all; }
+
+  /* ── GLOBAL DARK GLOW THEMES (Immersive) ── */
+  .bg-1 { background: radial-gradient(circle at center, #35001a, #0a0005); }
+  .bg-2 { background: radial-gradient(circle at center, #230030, #0a0011); }
+  .bg-3 { background: radial-gradient(circle at center, #2b001a, #000000); }
+
+  /* ── ORBS (Immersive Glow with Blob Wave) ── */
+  .orbs { position: absolute; inset: 0; pointer-events: none; overflow: hidden; filter: blur(50px); -webkit-filter: blur(50px); }
+  .orb { position: absolute; opacity: 0; transition: opacity 1.5s ease; animation: blob-float 15s infinite alternate ease-in-out; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 2px solid rgba(255, 255, 255, 0.15); box-shadow: 0 8px 32px 0 rgba(255, 0, 100, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.2); }
+  .active .orb { opacity: 1; }
+
+  @keyframes blob-float {
+    0% { transform: translate(0, 0) scale(1) rotate(0deg); border-radius: 40% 60% 70% 30% / 40% 40% 60% 50%; }
+    33% { transform: translate(12vw, -8vh) scale(1.15) rotate(120deg); border-radius: 60% 40% 30% 70% / 50% 60% 40% 40%; }
+    66% { transform: translate(-8vw, 12vh) scale(0.85) rotate(240deg); border-radius: 30% 70% 50% 50% / 60% 30% 70% 40%; }
+    100% { transform: translate(6vw, 6vh) scale(1.1) rotate(360deg); border-radius: 50% 50% 40% 60% / 40% 50% 50% 40%; }
+  }
+
+  /* Page 1 — vibrant rose/peach sweet colors */
+  .orb-1 { width: 50vw; height: 50vw; background: linear-gradient(135deg, rgba(255,42,133,0.35), rgba(255,154,68,0.35)); top: 5%; left: -10%; animation-delay: 0s; }
+  .orb-2 { width: 60vw; height: 60vw; background: linear-gradient(135deg, rgba(252,96,168,0.35), rgba(255,75,145,0.35)); bottom: 5%; right: -15%; animation-delay: -3s; }
+  .orb-3 { width: 45vw; height: 45vw; background: linear-gradient(135deg, rgba(255,107,174,0.35), rgba(255,42,133,0.35)); top: 40%; left: 20%; animation-delay: -7s; border-radius: 0 !important; clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); animation: spin-shape 20s linear infinite; }
+  .orb-4 { width: 40vw; height: 40vw; background: linear-gradient(135deg, rgba(155,35,234,0.35), rgba(255,42,133,0.35)); bottom: 25%; left: 10%; animation-delay: -5s; border-radius: 0 !important; clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%); animation: spin-shape 25s linear infinite reverse; }
+
+  @keyframes spin-shape { 100% { transform: rotate(360deg); } }
+
+  /* Page 2 — aurora vibrant */
+  .orb-a1 { width: 55vw; height: 55vw; background: linear-gradient(135deg, rgba(0,242,254,0.35), rgba(30,100,255,0.35)); top: 0%; left: 0%; animation-delay: 0s; }
+  .orb-a2 { width: 60vw; height: 60vw; background: linear-gradient(135deg, rgba(155,35,234,0.35), rgba(255,0,150,0.35)); bottom: 0%; right: -15%; animation-delay: -4s; }
+  .orb-a3 { width: 50vw; height: 50vw; background: linear-gradient(135deg, rgba(240,147,251,0.35), rgba(245,87,108,0.35)); top: 35%; left: 15%; animation-delay: -9s; border-radius: 0 !important; clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%); animation: spin-shape 22s linear infinite; }
+
+  /* Page 3 — deep space */
+  .orb-s1 { width: 50vw; height: 50vw; background: linear-gradient(135deg, rgba(95,114,189,0.35), rgba(155,35,234,0.35)); top: 0%; left: -10%; animation-delay: 0s; }
+  .orb-s2 { width: 60vw; height: 60vw; background: linear-gradient(135deg, rgba(155,35,234,0.35), rgba(255,0,100,0.35)); bottom: -5%; right: -5%; animation-delay: -2s; }
+  .orb-s3 { width: 55vw; height: 55vw; background: linear-gradient(135deg, rgba(249,119,148,0.35), rgba(255,160,100,0.35)); top: 40%; left: 10%; animation-delay: -8s; border-radius: 0 !important; clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); animation: spin-shape 24s linear infinite reverse;}
+
+  /* ── STARS ── */
+  .stars-layer { position: absolute; inset: 0; pointer-events: none; }
+  .star-dot {
+    position: absolute; border-radius: 50%; background: #fff;
+    animation: twinkle ease-in-out infinite;
+  }
+  @keyframes twinkle { 0%,100%{opacity:0.08} 50%{opacity:0.7} }
+
+  /* ── PETALS ── */
+  .petals-layer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .petal {
+    position: absolute;
+    border-radius: 50% 0 50% 0;
+    animation: petal-fall linear infinite;
+    top: -20px;
+  }
+  @keyframes petal-fall {
+    0%   { transform: translateY(-20px) rotate(0deg) translateX(0); opacity: 0.7; }
+    50%  { transform: translateY(50vh) rotate(200deg) translateX(30px); opacity: 0.5; }
+    100% { transform: translateY(105vh) rotate(400deg) translateX(-20px); opacity: 0; }
+  }
+
+  /* ── GLASS BUTTONS ── */
+  .btn {
+    width: 100%;
+    padding: 16px 22px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.8px;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    text-align: center;
+    box-shadow: 0 8px 32px 0 rgba(255, 20, 147, 0.25), inset 0 2px 5px rgba(255, 255, 255, 0.2);
+    position: relative;
+    z-index: 5;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    -webkit-appearance: none;
+    outline: none;
+  }
+  .btn:active { transform: scale(0.96); box-shadow: 0 4px 15px 0 rgba(255, 20, 147, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.2); }
+  .btn:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 12px 45px 0 rgba(255, 20, 147, 0.35), inset 0 2px 6px rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+  }
+  .btn.gold {
+    border-color: rgba(255, 215, 0, 0.5);
+    background: rgba(255, 215, 0, 0.15);
+    box-shadow: 0 8px 32px 0 rgba(255, 165, 0, 0.25), inset 0 2px 5px rgba(255, 255, 255, 0.2);
+  }
+  .btn.gold:hover {
+    background: rgba(255, 215, 0, 0.25);
+    border-color: rgba(255, 215, 0, 0.8);
+    box-shadow: 0 12px 45px 0 rgba(255, 165, 0, 0.4), inset 0 2px 6px rgba(255, 255, 255, 0.3);
+  }
+
+  /* ── NATURE DECOR (BLOOMING BUTTONS) ── */
+  .nature-decor { position: absolute; inset: 0; pointer-events: none; z-index: 10; }
+  .n-item { position: absolute; opacity: 0; transform: scale(0); transition: all 0.6s cubic-bezier(0.34, 1.35, 0.64, 1); font-size: 16px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+  .btn.bloomed .n-item, .top-notif.bloomed .n-item { opacity: 1; }
+  .btn.bloomed .f1, .top-notif.bloomed .f1 { transform: scale(1.2) translate(-22px, -18px) rotate(-15deg); }
+  .btn.bloomed .f2, .top-notif.bloomed .f2 { transform: scale(1.1) translate(22px, 18px) rotate(20deg); right: 0; bottom: 0; }
+  .btn.bloomed .l1, .top-notif.bloomed .l1 { transform: scale(1.3) translate(-15px, 25px) rotate(-45deg); bottom: 0; left: 0; }
+  .btn.bloomed .l2, .top-notif.bloomed .l2 { transform: scale(1.1) translate(15px, -22px) rotate(35deg); top: 0; right: 0; }
+  .b1 { bottom: 0; right: -15px; font-size: 15px; }
+  .b2 { top: -15px; left: -10px; font-size: 13px; }
+  .btn.bloomed .b1, .top-notif.bloomed .b1 { opacity: 1; animation: flutter 2s infinite alternate ease-in-out; }
+  .btn.bloomed .b2, .top-notif.bloomed .b2 { opacity: 1; animation: flutter2 1.5s infinite alternate ease-in-out; }
+  @keyframes flutter { 0% { transform: scale(1.2) translate(0, 0) rotate(-10deg); } 100% { transform: scale(1.2) translate(18px, -18px) rotate(10deg); } }
+  @keyframes flutter2 { 0% { transform: scale(1.1) translate(0, 0) rotate(5deg); } 100% { transform: scale(1.1) translate(-12px, -15px) rotate(-15deg); } }
+
+  .btn.faded {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: default;
+    box-shadow: none;
+  }
+  .btn.half {
+    width: 100%;
+    font-size: 14px;
+    padding: 14px 10px;
+    border-radius: 26px;
+  }
+  .btn.half.warn {
+    border-color: rgba(255, 80, 80, 0.5);
+    background: rgba(255, 80, 80, 0.15);
+  }
+  .btn.half.warn:hover {
+    background: rgba(255, 80, 80, 0.25);
+    border-color: rgba(255, 100, 100, 0.7);
+    box-shadow: 0 12px 45px 0 rgba(255, 50, 50, 0.4), inset 0 2px 6px rgba(255, 255, 255, 0.3);
+  }
+
+  
+  /* ── CALENDAR WIDGET ── */
+  .cal-widget {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(35px);
+    -webkit-backdrop-filter: blur(35px);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-top: 1px solid rgba(255, 255, 255, 0.6);
+    border-left: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 32px;
+    padding: 28px;
+    width: 320px;
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.2);
+    color: #fff;
+    transform: scale(0.9) translateY(20px);
+    opacity: 0;
+    transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s ease;
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 10;
+  }
+  .cal-widget.show { transform: scale(1) translateY(0); opacity: 1; }
+  
+  .cal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .cal-tabs { display: flex; background: rgba(255,255,255,0.25); border-radius: 20px; padding: 4px; font-size: 13px; font-weight: 500; }
+  .cal-tab { padding: 8px 32px; border-radius: 16px; color: rgba(255,255,255,0.9); }
+  .cal-tab.active { background: rgba(255,255,255,0.95); color: #111; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+  .cal-cog { width: 36px; height: 36px; background: rgba(0,0,0,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: inset 0 0 5px rgba(255,255,255,0.3); }
+  
+  .cal-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; padding: 0 4px; }
+  .cal-month { font-size: 42px; font-weight: 700; letter-spacing: -1.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+  .cal-year { font-size: 36px; font-weight: 300; opacity: 0.85; }
+
+  .cal-slider-wrap { position: relative; height: 90px; margin-bottom: 22px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 20%, #000 80%, transparent); }
+  .cal-days { display: flex; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.75); margin-bottom: 12px; gap: 6px;}
+  .cal-days span { width: 38px; text-align: center; }
+  
+  .cal-dates-window { width: 100%; overflow: visible; position: relative; height: 44px; display: flex; align-items: center; }
+  .cal-dates-track { display: flex; position: absolute; left: 0; align-items: center; transition: transform 0.05s linear; gap: 6px;}
+  .cal-date-item { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 500; opacity: 0.7; border-radius: 50%; flex-shrink: 0; transition: all 0.3s cubic-bezier(0.34,1.35,0.64,1); }
+  .cal-date-item.active { background: linear-gradient(135deg, #ff3366, #ff7b00); opacity: 1; font-weight: 700; font-size: 18px; box-shadow: 0 4px 15px rgba(255, 51, 102, 0.5); transform: scale(1.05); color: #fff; border: 1px solid rgba(255,255,255,0.4); }
+  .cal-date-item.active-glow { animation: cal-glow 1.5s infinite alternate; }
+  @keyframes cal-glow { 0% { box-shadow: 0 0 10px rgba(255, 51, 102, 0.4); } 100% { box-shadow: 0 0 25px rgba(255, 51, 102, 0.9); } }
+
+  .cal-bottom { display: flex; justify-content: space-between; align-items: center; padding: 0 4px; }
+  .cal-note { font-size: 14px; font-weight: 400; color: rgba(255,255,255,0.8); display: flex; align-items: center; gap: 6px; }
+  .cal-new-event { background: rgba(255,255,255,0.25); padding: 10px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; color: #fff; box-shadow: inset 0 1px 0 rgba(255,255,255,0.4); }
+
+  /* ── NEW INTRO CONTENT LAYOUT ── */
+  .intro-content {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; position: relative; z-index: 5; min-height: 0;
+  }
+  .intro-text-wrap {
+    text-align: center; margin-bottom: 20px; transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  .intro-text-wrap.hide { opacity: 0; transform: translateY(-20px) scale(0.9); pointer-events: none; }
+  .intro-text-wrap.shrunk { transform: scale(0.4) translateY(-10px); margin-top: -30px; margin-bottom: -40px; }
+
+  .video-wrap {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    display: none;
+    align-items: center; 
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: 5; 
+    margin-top: 15px;
+    margin-bottom: 5px;
+  }
+  .video-wrap.show {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  .video-wrap video {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 18px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 25px rgba(255,20,147,0.4);
+    border: 1px solid rgba(255,255,255,0.15);
+    display: block;
+    pointer-events: none;
+  }
+
+  /* ══════════════════════════════
+     PAGE 1 — INTRO
+  ══════════════════════════════ */
+  #pg1 { justify-content: space-between; padding-top: max(env(safe-area-inset-top,0px), 40px); padding-bottom: max(env(safe-area-inset-bottom,0px), 28px); }
+
+  .pg1-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    position: relative;
+    z-index: 3;
+  }
+
+  .hb-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: clamp(22px, 6.5vw, 30px);
+    color: #fff0f5;
+    text-align: center;
+    text-shadow: 0 0 28px rgba(245,60,130,0.9), 0 2px 10px rgba(0,0,0,0.6);
+    line-height: 1.2;
+  }
+
+  .name-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(42px, 13vw, 58px);
+    color: #ffe8f5;
+    text-align: center;
+    text-shadow: 0 0 35px rgba(255,110,190,1), 0 0 15px rgba(255,180,230,0.85), 0 0 55px rgba(255,60,155,0.6);
+    line-height: 1.0;
+    letter-spacing: 1px;
+    margin-top: -4px;
+  }
+
+  .subtitle {
+    color: #f9c0d8;
+    font-size: 10px;
+    letter-spacing: 2.8px;
+    opacity: 0.88;
+    text-align: center;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+
+
+  /* Envelope */
+  .env-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    position: relative;
+    z-index: 5;
+    padding: 8px;
+  }
+  .env-emoji {
+    font-size: 58px;
+    filter: drop-shadow(0 0 16px rgba(255,170,50,0.9));
+    animation: env-float 2.6s ease-in-out infinite;
+    transition: transform 0.3s, filter 0.3s;
+    display: block;
+    line-height: 1;
+  }
+  .env-emoji.locked {
+    animation: none;
+    filter: drop-shadow(0 0 22px rgba(255,185,50,1));
+    transform: scale(1.15);
+  }
+  @keyframes env-float {
+    0%,100% { transform: translateY(0) rotate(-3deg); }
+    50%      { transform: translateY(-10px) rotate(3deg); }
+  }
+  .env-hint { color: #ffd080; font-size: 10px; letter-spacing: 1.8px; opacity: 0.85; text-transform: uppercase; }
+
+
+  .pg1-btn-wrap { width: 100%; position: relative; z-index: 5; }
+
+  /* ══════════════════════════════
+     PAGE 2 — VIDEO / EYES
+  ══════════════════════════════ */
+  #pg2 { padding: 0; justify-content: flex-end; }
+
+
+
+  /* Notification bar — cool holographic style */
+  .top-notif {
+    position: absolute;
+    top: max(env(safe-area-inset-top, 0px), 28px);
+    left: 12px; right: 12px;
+    background: rgba(20, 5, 30, 0.6);
+    border: 1px solid rgba(255, 120, 180, 0.5);
+    border-radius: 18px;
+    padding: 14px 16px;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    box-shadow: 0 0 25px rgba(255, 20, 147, 0.4), inset 0 0 15px rgba(255, 100, 200, 0.2);
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+    transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.34,1.35,0.64,1);
+    pointer-events: none;
+    overflow: visible;
+  }
+  .top-notif::before {
+    content: ''; position: absolute; inset: 0; border-radius: 18px;
+    background: linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.15) 50%, transparent 60%);
+    background-size: 200% 200%;
+    animation: holo-sweep 3s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes holo-sweep { 0% { background-position: 200% 100%; } 100% { background-position: -200% -100%; } }
+  
+  .top-notif.show { opacity: 1; transform: translateY(0) scale(1); pointer-events: all; animation: notif-float 3s infinite alternate ease-in-out forwards; }
+  @keyframes notif-float { 100% { transform: translateY(-3px) scale(1); } }
+
+  .notif-icon {
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    background: rgba(255, 50, 150, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 150, 200, 0.6);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 0 15px rgba(255, 50, 150, 0.6), inset 0 0 8px rgba(255, 255, 255, 0.4);
+    animation: icon-pulse 2s infinite alternate;
+  }
+  @keyframes icon-pulse { 100% { transform: scale(1.08); box-shadow: 0 0 25px rgba(255, 100, 200, 0.8); } }
+
+  .notif-title { color: #fff5fa; font-size: 12px; font-weight: 600; line-height: 1.3; text-shadow: 0 0 8px rgba(255,255,255,0.5); }
+  .notif-sub { color: #f9c0d8; font-size: 11px; opacity: 0.9; margin-top: 5px; display: flex; align-items: center; gap: 4px; }
+  .glow-bar {
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #00f0ff, #ff007f, #ffaa00, #00f0ff, transparent);
+    border-radius: 3px;
+    margin-top: 7px;
+    animation: glow-slide 1.5s linear infinite;
+    background-size: 200%;
+    box-shadow: 0 0 8px rgba(255, 0, 127, 0.8);
+  }
+  @keyframes glow-slide { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+  /* Page 2 bottom UI */
+  .pg2-ui {
+    position: absolute;
+    bottom: 40px; /* Fallback for older agents */
+    bottom: max(env(safe-area-inset-bottom, 0px), 40px);
+    left: 0; right: 0;
+    z-index: 10;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .btn-row { display: flex; flex-direction: column; gap: 14px; width: 100%; align-items: center; text-align: center; }
+
+  /* Choice buttons slide up */
+  .choice-btns {
+    transform: translateY(120px);
+    opacity: 0;
+    transition: transform 0.65s cubic-bezier(0.34,1.35,0.64,1), opacity 0.4s;
+  }
+  .choice-btns.show { transform: translateY(0); opacity: 1; }
+
+  /* Explore button */
+  .explore-btn-wrap {
+    transform: translateY(100px);
+    opacity: 0;
+    transition: transform 0.6s cubic-bezier(0.34,1.35,0.64,1), opacity 0.4s;
+    display: none;
+  }
+  .explore-btn-wrap.show { transform: translateY(0); opacity: 1; display: block; }
+
+
+
+  /* ══════════════════════════════
+     PAGE 3 — SCRATCH
+  ══════════════════════════════ */
+  #pg3 { justify-content: space-between; padding-top: max(env(safe-area-inset-top,0px), 40px); padding-bottom: max(env(safe-area-inset-bottom,0px), 28px); }
+
+  .pg3-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    width: 100%;
+    position: relative;
+    z-index: 3;
+  }
+
+  .surprise-title {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 700;
+    color: #fff5fa;
+    font-size: 16px;
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 16px rgba(240,60,130,0.75);
+    text-align: center;
+  }
+
+  /* Scratch card */
+  .scratch-wrap {
+    width: 100%;
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(255, 20, 147, 0.25);
+  }
+  .scratch-reveal {
+    width: 100%;
+    height: 280px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    border-radius: 20px;
+  }
+  .scratch-reveal-text {
+    color: #ffd080;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  /* The canvas sits on top */
+  #scratchCanvas {
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    cursor: crosshair;
+    touch-action: none;
+  }
+
+  .scratch-hint { color: #f4c0d1; font-size: 10px; opacity: 0.5; letter-spacing: 1px; text-align: center; }
+
+  /* ══════════════════════════════
+     FLOATERS & CONFETTI
+  ══════════════════════════════ */
+  .floater {
+    position: fixed;
+    font-size: 22px;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0;
+    animation: floater-anim ease-in-out forwards;
+  }
+  @keyframes floater-anim {
+    0%   { opacity:0; transform:scale(0.3) rotate(-20deg) translateY(0); }
+    20%  { opacity:1; transform:scale(1.25) rotate(6deg) translateY(-10px); }
+    60%  { opacity:1; transform:scale(1) rotate(-2deg) translateY(-30px); }
+    100% { opacity:0; transform:scale(0.7) rotate(12deg) translateY(-70px); }
+  }
+  .confetti-p {
+    position: fixed;
+    z-index: 100;
+    pointer-events: none;
+    animation: conf-fall linear forwards;
+  }
+  @keyframes conf-fall {
+    0%   { transform:translateY(-20px) rotate(0deg); opacity:1; }
+    100% { transform:translateY(110vh) rotate(800deg); opacity:0; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══════════ PAGE 1 ═══════════ -->
+  <div class="page bg-1 active" id="pg1">
+    <div class="orbs">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+      <div class="orb orb-4"></div>
+    </div>
+    <div class="stars-layer" id="stars1"></div>
+    <div class="petals-layer" id="petals1"></div>
+
+    <div class="intro-content">
+      <div class="intro-text-wrap hide" id="introText">
+        <div class="hb-text">Happy Birthday</div>
+        <div class="name-text">Aakansha</div>
+        <div class="subtitle">Some surprises await you</div>
+      </div>
+      
+      <!-- Video Element -->
+      <div class="video-wrap" id="pg1VideoWrap">
+        <video id="pg1Video" src="lv_0_20260411024006.mp4" playsinline></video>
+      </div>
+
+      <!-- Interactive Calendar Widget -->
+      <div class="cal-widget" id="calWidget">
+        <div class="cal-top">
+          <div class="cal-tabs">
+            <div class="cal-tab active">Month</div>
+          </div>
+        </div>
+        <div class="cal-header">
+          <span class="cal-month" id="calMonth">January</span> <span class="cal-year" id="calYear">2026</span>
+        </div>
+        <div class="cal-slider-wrap">
+          <div class="cal-days">
+            <span>Fri</span><span>Sat</span><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span>
+          </div>
+          <div class="cal-dates-window">
+             <div class="cal-dates-track" id="calDatesTrack">
+               <!-- JS fills this -->
+             </div>
+          </div>
+        </div>
+
+      </div>
+
+      
+      <!-- Envelope appears after calendar animation -->
+      <div class="env-wrap" id="envWrap" onclick="handleEnvTap()" style="display: none; margin-top: 20px;">
+        <span class="env-emoji" id="envEmoji">💌</span>
+        <span class="env-hint">Tap to open your first gift</span>
+      </div>
+    </div>
+
+    <!-- Bottom button -->
+    <div class="pg1-btn-wrap" style="width: 100%; margin-top: auto;">
+      <button class="btn faded" id="pg1Btn" onclick="handlePg1Btn()" style="display:none; width: 100%;">Wait for the date ✦</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ PAGE 2 ═══════════ -->
+  <div class="page bg-2" id="pg2">
+    <div class="orbs">
+      <div class="orb orb-a1"></div>
+      <div class="orb orb-a2"></div>
+      <div class="orb orb-a3"></div>
+      <div class="orb orb-a4"></div>
+    </div>
+    <div class="stars-layer" id="stars2"></div>
+    <div class="petals-layer" id="petals2"></div>
+
+
+
+    <!-- Notification -->
+    <div class="top-notif" id="pg2Notif">
+      <div class="notif-icon">👁</div>
+      <div style="flex:1;">
+        <div class="notif-title">"Do you want to see how my eyes see you?"</div>
+        <div class="glow-bar"></div>
+      </div>
+    </div>
+
+    <!-- PAGE 2 VIDEO -->
+    <div class="video-wrap" id="pg2VideoWrap" style="margin-bottom: 90px; margin-top: 60px;">
+      <video id="pg2Video" src="lv_0_20260411114546.mp4" playsinline></video>
+    </div>
+
+    <!-- Bottom UI layer -->
+    <div class="pg2-ui">
+      <div class="explore-btn-wrap" id="exploreWrap">
+        <button class="btn gold" onclick="goToPage(3)">Tap to explore what's next ✦</button>
+      </div>
+      <div class="choice-btns" id="choiceBtns">
+        <div class="btn-row">
+          <button class="btn half warn" id="watchBtn" onclick="handleWatch()">Watch at your own risk 🎥</button>
+          <button class="btn half" id="noBtn" onclick="handleNo()">I don't want to</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ PAGE 3 ═══════════ -->
+  <div class="page bg-3" id="pg3">
+    <div class="orbs">
+      <div class="orb orb-s1"></div>
+      <div class="orb orb-s2"></div>
+      <div class="orb orb-s3"></div>
+      <div class="orb orb-s4"></div>
+      <div class="orb orb-s5"></div>
+    </div>
+    <div class="stars-layer" id="stars3"></div>
+    <div class="petals-layer" id="petals3"></div>
+
+    <!-- Notification -->
+    <div class="top-notif" id="pg3Notif">
+      <div class="notif-icon">🗓</div>
+      <div>
+        <div class="notif-title">Your Surprise Is Booked!</div>
+        <!--
+          ★ EDIT THE LINE BELOW with the real location, time and date
+        -->
+        <div class="notif-sub">📍 Vidyasagar math &nbsp;·&nbsp; ⏰ 07:00 p.m. &nbsp;·&nbsp; 📅 Today</div>
+      </div>
+    </div>
+
+    <div class="pg3-center">
+      <div class="surprise-title">✦ &nbsp;Your Surprise&nbsp; ✦</div>
+
+      <!-- Scratch Card -->
+      <div class="scratch-wrap">
+        <div class="scratch-reveal" id="scratchReveal">
+          <video id="pg3Video" src="New.mp4" playsinline loop style="width:100%; height:100%; object-fit:cover; border-radius:20px; pointer-events:none;"></video>
+        </div>
+        <canvas id="scratchCanvas" width="400" height="160"></canvas>
+      </div>
+
+      <div class="scratch-hint">Tap and drag to scratch away the foil</div>
+    </div>
+
+    <div style="width:100%;position:relative;z-index:5;padding: 0 0 max(env(safe-area-inset-bottom,0px),12px);">
+      <button class="btn" style="opacity:0.45;font-size:12px;" onclick="resetAll()">↩ Start Over</button>
+    </div>
+  </div>
+
+</div><!-- #app -->
+
+<script>
+/* ═══════════════════════════════════
+   STATE
+═══════════════════════════════════ */
+let pg1Step = 0;      // 0=initial 1=env tapped 2=btn ready
+let pg2WatchDone = false;
+let pg2NoDone    = false;
+let pg2State     = 0;
+let scratchDone  = false;
+let currentPage  = 1;
+
+/* ═══════════════════════════════════
+   ENVIRONMENT BUILD (stars, petals)
+═══════════════════════════════════ */
+
+/* ═══════════════════════════════════
+   CALENDAR ANIMATION LOGIC
+═══════════════════════════════════ */
+let calAnimDone = false;
+function initCalendarAnim() {
+  const track = document.getElementById('calDatesTrack');
+  const monthEl = document.getElementById('calMonth');
+  const yearEl = document.getElementById('calYear');
+  if(!track || calAnimDone) return;
+  calAnimDone = true;
+
+  // Let widget pop in first
+  setTimeout(() => {
+    document.getElementById('calWidget').classList.add('show');
+  }, 800);
+
+  // We want to simulate a slot machine that spins through months/years and lands on April 20, 2026.
+  let htmlStr = '';
+  // Random dates leading up
+  for(let i=0; i<35; i++) {
+    htmlStr += `<div class="cal-date-item">${Math.floor(Math.random()*28)+1}</div>`;
+  }
+  // The target sequence
+  htmlStr += `<div class="cal-date-item">17</div>
+              <div class="cal-date-item">18</div>
+              <div class="cal-date-item">19</div>
+              <div class="cal-date-item" id="targetDate">20</div>
+              <div class="cal-date-item">21</div>
+              <div class="cal-date-item">22</div>
+              <div class="cal-date-item">23</div>
+              <div class="cal-date-item">24</div>
+              <div class="cal-date-item">25</div>`;
+  track.innerHTML = htmlStr;
+  
+  // Start spinning
+  setTimeout(() => {
+    let offset = 0;
+    const totalItems = track.children.length;
+    const targetIndex = totalItems - 6; 
+    const itemWidth = 44; 
+    const targetOffset = -(targetIndex * itemWidth) + (3 * itemWidth); 
+    
+    monthEl.textContent = 'January';
+    let currentX = 0;
+    
+    function animateSpin() {
+      let dist = targetOffset - currentX;
+      currentX += dist * 0.035; 
+      track.style.transform = `translateX(${currentX}px)`;
+      
+      if(Math.abs(dist) > 900) monthEl.textContent = 'February';
+      else if(Math.abs(dist) > 600) monthEl.textContent = 'March';
+      else monthEl.textContent = 'April';
+
+      if(Math.abs(dist) < 1) {
+        track.style.transform = `translateX(${targetOffset}px)`;
+        const target = document.getElementById('targetDate');
+        if(target) {
+            target.classList.add('active');
+            target.classList.add('active-glow');
+        }
+        onCalendarSpinComplete();
+      } else {
+        requestAnimationFrame(animateSpin);
+      }
+    }
+    animateSpin();
+  }, 1600);
+}
+
+function onCalendarSpinComplete() {
+  setTimeout(() => {
+    // Make calendar smoothly make room for the envelope
+    const cal = document.getElementById('calWidget');
+    if (cal) {
+      cal.style.transition = 'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)';
+      cal.style.transform = 'scale(1) translateY(-15px)';
+    }
+
+    const env = document.getElementById('envWrap');
+    env.style.display = 'flex';
+    env.style.opacity = '0';
+    env.style.transform = 'scale(0.8) translateY(20px)';
+    
+    requestAnimationFrame(() => {
+        env.style.transition = 'opacity 0.6s ease, transform 0.8s cubic-bezier(0.34, 1.35, 0.64, 1)';
+        env.style.opacity = '1';
+        env.style.transform = 'scale(1) translateY(0)';
+    });
+    
+    spawnFloaters(1, 8);
+    confettiBurst(35);
+  }, 1000);
+}
+
+function buildStars(id, count) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  for (let i = 0; i < count; i++) {
+    const s = document.createElement('div');
+    s.className = 'star-dot';
+    const sz = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;
+      animation-delay:${Math.random()*4}s;animation-duration:${1.5+Math.random()*2.5}s;`;
+    el.appendChild(s);
+  }
+}
+function buildPetals(id, count) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const colors = ['#f7c5d5','#f9dba0','#f4b8cc','#fdeec8','#ff9fc0','#ffd6a5'];
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    const s = 6 + Math.random() * 9;
+    p.style.cssText = `
+      width:${s}px; height:${s*1.6}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      left:${Math.random()*100}%;
+      opacity:${0.4+Math.random()*0.45};
+      animation-duration:${3.5+Math.random()*3.5}s;
+      animation-delay:${Math.random()*6}s;`;
+    el.appendChild(p);
+  }
+}
+buildStars('stars1', 38);
+buildStars('stars2', 22);
+buildStars('stars3', 85);
+['petals1','petals2','petals3'].forEach(id => buildPetals(id, 9));
+
+/* ═══════════════════════════════════
+   FLOATERS & CONFETTI
+═══════════════════════════════════ */
+const emojiSets = {
+  1: ['🌸','🌺','💕','🦋','🌹','🎈','💌'],
+  2: ['🎂','💖','🌹','🎀','💐','🦋','🥂'],
+  3: ['🎊','🎉','🎈','💖','🌸','✨','🎁','🌺']
+};
+function spawnFloaters(page, count) {
+  const emojis = emojiSets[page] || ['🌸'];
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'floater';
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.left = (8 + Math.random() * 82) + '%';
+      el.style.top  = (10 + Math.random() * 70) + '%';
+      el.style.animationDuration = (1.6 + Math.random() * 2) + 's';
+      el.style.animationDelay = (Math.random() * 0.35) + 's';
+      document.getElementById('app').appendChild(el);
+      setTimeout(() => el.remove(), 4200);
+    }, i * 130);
+  }
+}
+function confettiBurst(count = 35) {
+  const cols = ['#ff6bae','#f9c74f','#ff3a88','#ffb030','#c97dff','#80ffdb','#fff','#ffd6e0'];
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-p';
+    p.style.left = (3 + Math.random() * 94) + '%';
+    p.style.top  = '-10px';
+    p.style.background = cols[Math.floor(Math.random() * cols.length)];
+    const sz = 5 + Math.random() * 9;
+    p.style.width = sz + 'px';
+    p.style.height = sz + 'px';
+    p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    p.style.animationDuration = (1.3 + Math.random() * 1.8) + 's';
+    p.style.animationDelay   = (Math.random() * 0.6) + 's';
+    document.getElementById('app').appendChild(p);
+    setTimeout(() => p.remove(), 3500);
+  }
+}
+
+function setBtnText(btn, text) {
+  if (typeof btn === 'string') btn = document.getElementById(btn);
+  if (!btn) return;
+  const decor = btn.querySelector('.nature-decor');
+  btn.textContent = text;
+  if (decor) btn.appendChild(decor);
+}
+
+/* ═══════════════════════════════════
+   NATURE DECORATION 
+═══════════════════════════════════ */
+function decorateElements(pageId) {
+  const page = document.getElementById(pageId);
+  if (!page) return;
+  page.querySelectorAll('.btn, .top-notif').forEach(el => {
+    if (!el.querySelector('.nature-decor')) {
+      const decor = document.createElement('div');
+      decor.className = 'nature-decor';
+      decor.innerHTML = `<span class="n-item f1">🌸</span><span class="n-item f2">🌼</span><span class="n-item l1">🌿</span><span class="n-item l2">🌱</span><span class="n-item b1">🦋</span><span class="n-item b2">✨</span>`;
+      el.appendChild(decor);
+    }
+    // Bloom them safely when the page transition settles
+    setTimeout(() => el.classList.add('bloomed'), 150);
+  });
+}
+
+/* ═══════════════════════════════════
+   PAGE NAVIGATION
+═══════════════════════════════════ */
+function goToPage(num) {
+  // Pause any video if we are leaving its page
+  if (currentPage === 1 && num !== 1) {
+    const vid1 = document.getElementById('pg1Video');
+    if (vid1) vid1.pause();
+  }
+  if (currentPage === 2 && num !== 2) {
+    const vid2 = document.getElementById('pg2Video');
+    if (vid2) vid2.pause();
+  }
+
+  const prev = document.getElementById('pg' + currentPage);
+  const next = document.getElementById('pg' + num);
+  if (prev) { prev.classList.remove('active'); }
+  currentPage = num;
+  if (next)  { next.classList.add('active'); }
+  confettiBurst(40);
+  spawnFloaters(num, 7);
+  
+  decorateElements('pg' + num);
+
+  if (num === 2) initPage2();
+  if (num === 3) initPage3();
+}
+
+/* ═══════════════════════════════════
+   PAGE 1 LOGIC
+═══════════════════════════════════ */
+function handleEnvTap() {
+  if (pg1Step !== 0) return;
+  pg1Step = 1;
+
+  // Prime the video with the trusted click
+  const vid = document.getElementById('pg1Video');
+  if (vid) {
+    vid.muted = true;
+    vid.play().then(() => {
+        vid.pause();
+        vid.currentTime = 0;
+        vid.muted = false;
+    }).catch(e => console.log('Video prime failed:', e));
+  }
+
+  const cal = document.getElementById('calWidget');
+  cal.style.transform = 'scale(0.8) translateY(-20px)';
+  cal.style.opacity = '0';
+
+  const env = document.getElementById('envWrap');
+  env.style.transition = 'transform 0.6s cubic-bezier(0.25,1,0.5,1), opacity 0.6s ease';
+  env.style.transform = 'scale(0.6) translateY(20px)';
+  env.style.opacity = '0';
+  env.style.pointerEvents = 'none';
+  
+  setTimeout(() => {
+    cal.style.display = 'none';
+    env.style.display = 'none';
+    
+    // Reveal text in the center
+    const introText = document.getElementById('introText');
+    introText.classList.remove('hide');
+    spawnFloaters(1, 4);
+    confettiBurst(15);
+    
+    // Wait 3 seconds
+    setTimeout(() => {
+      // Shrink and move text up
+      introText.classList.add('shrunk');
+      
+        // Wait for shrink animation to get going before proceeding
+        setTimeout(() => {
+          const vidWrap = document.getElementById('pg1VideoWrap');
+          const vid = document.getElementById('pg1Video');
+          
+          vidWrap.style.display = 'flex';
+          requestAnimationFrame(() => {
+            vidWrap.classList.add('show');
+            vid.volume = 1;
+            vid.play().catch(e => {
+              console.error("Playback failed:", e);
+              // Fallback to muted autoplay if unmuted fails
+              vid.muted = true;
+              vid.play(); // Muted fallback usually succeeds without user gesture
+            });
+          });
+
+          spawnFloaters(1, 6);
+          confettiBurst(25);
+
+          vid.onended = () => {
+            if (pg1Step !== 2) {
+              pg1Step = 2;
+              const btn = document.getElementById('pg1Btn');
+              setBtnText(btn, "Tap to see what's waiting for you ✦");
+              btn.classList.remove('faded');
+              btn.classList.add('gold');
+              btn.style.opacity = '0';
+              btn.style.transform = 'scale(0.8) translateY(20px)';
+              btn.style.display = 'block';
+
+              requestAnimationFrame(() => {
+                btn.style.transition = 'all 0.6s cubic-bezier(0.34, 1.35, 0.64, 1)';
+                btn.style.opacity = '1';
+                btn.style.transform = 'scale(1) translateY(0)';
+              });
+
+              spawnFloaters(1, 8);
+            }
+            vid.play(); // Loop manually
+          };
+      }, 500);
+
+    }, 3000);
+  }, 500);
+}
+
+
+function handlePg1Btn() {
+  if (pg1Step === 2) goToPage(2);
+}
+
+/* ═══════════════════════════════════
+   PAGE 2 LOGIC
+═══════════════════════════════════ */
+function initPage2() {
+  pg2WatchDone = false;
+  pg2NoDone    = false;
+  pg2State     = 0;
+
+  const vidWrap2 = document.getElementById('pg2VideoWrap');
+  if (vidWrap2) {
+    vidWrap2.classList.remove('show');
+    vidWrap2.style.display = 'none';
+    const vid2 = document.getElementById('pg2Video');
+    if (vid2) {
+      vid2.pause();
+      vid2.currentTime = 0;
+    }
+  }
+
+  // Reset choice buttons container
+  const cb = document.getElementById('choiceBtns');
+  cb.style.display = '';
+  cb.style.opacity = '';
+  cb.style.transform = '';
+  cb.style.transition = '';
+  cb.classList.remove('show');
+
+  // Reset individual buttons
+  const wBtn = document.getElementById('watchBtn');
+  setBtnText(wBtn, 'Watch at your own risk 🎥');
+  wBtn.style.fontSize = '';
+  wBtn.style.opacity = '';
+  wBtn.style.transition = '';
+
+  const nBtn = document.getElementById('noBtn');
+  setBtnText(nBtn, "I don't want to");
+  nBtn.style.opacity = '';
+  nBtn.style.transition = '';
+
+  // Reset explore
+  const ew = document.getElementById('exploreWrap');
+  ew.classList.remove('show');
+  ew.style.display = 'none';
+
+  // Reset notification
+  const notif = document.getElementById('pg2Notif');
+  notif.classList.remove('show');
+
+  setTimeout(() => notif.classList.add('show'), 500);
+  setTimeout(() => cb.classList.add('show'), 900);
+}
+
+// Prime Helper
+function primePg2Video() {
+  const vid = document.getElementById('pg2Video');
+  if (vid && !vid.hasAttribute('primed')) {
+    vid.muted = true;
+    vid.play().then(() => {
+      vid.pause();
+      vid.currentTime = 0;
+      vid.muted = false;
+      vid.setAttribute('primed', 'true');
+    }).catch(e => console.log('pg2Video prime failed:', e));
+  }
+}
+
+function handleWatch() {
+  primePg2Video();
+  if (!pg2WatchDone) {
+    pg2WatchDone = true;
+    const btn = document.getElementById('watchBtn');
+    btn.style.transition = 'opacity 0.28s';
+    btn.style.opacity = '0';
+    setTimeout(() => {
+      setBtnText(btn, "I'm warning you — you're gonna love it. Just tap here 💫");
+      btn.style.fontSize = '10.5px';
+      btn.style.opacity = '1';
+    }, 300);
+  } else {
+    unlockVideo();
+  }
+}
+
+function handleNo() {
+  primePg2Video();
+  if (!pg2NoDone) {
+    pg2NoDone = true;
+    const btn = document.getElementById('noBtn');
+    btn.style.transition = 'opacity 0.28s';
+    btn.style.opacity = '0';
+    setTimeout(() => {
+      setBtnText(btn, "Yes, you should. Just click here 😏");
+      btn.style.opacity = '1';
+    }, 300);
+  } else {
+    unlockVideo();
+  }
+}
+
+function unlockVideo() {
+  if (pg2State > 0) return;
+  pg2State = 1;
+
+  // Hide notification
+  document.getElementById('pg2Notif').classList.remove('show');
+
+  // Hide choice buttons
+  const cb = document.getElementById('choiceBtns');
+  cb.style.transition = 'opacity 0.4s';
+  cb.style.opacity = '0';
+  setTimeout(() => { cb.style.display = 'none'; }, 450);
+
+  // Show video
+  setTimeout(() => {
+    const vidWrap = document.getElementById('pg2VideoWrap');
+    const vid = document.getElementById('pg2Video');
+    vidWrap.style.display = 'flex';
+    requestAnimationFrame(() => {
+      vidWrap.classList.add('show');
+      vid.volume = 1;
+      vid.play().catch(e => {
+        console.log("pg2Video play failed:", e);
+        vid.muted = true;
+        vid.play();
+      });
+    });
+
+    spawnFloaters(2, 6);
+    confettiBurst(25);
+
+    // Show explore button after one loop
+    vid.onended = () => {
+      const ew = document.getElementById('exploreWrap');
+      if (ew.style.display !== 'block') {
+        ew.style.display = 'block';
+        requestAnimationFrame(() => {
+          ew.classList.add('show');
+        });
+        spawnFloaters(2, 5);
+      }
+      vid.play(); // manual loop
+    };
+  }, 500);
+}
+
+/* ═══════════════════════════════════
+   PAGE 3 LOGIC
+═══════════════════════════════════ */
+function initPage3() {
+  scratchDone = false;
+  document.getElementById('pg3Notif').classList.remove('show');
+  
+  // Start the video looping underneath the scratch foil
+  const vid3 = document.getElementById('pg3Video');
+  if (vid3) {
+    vid3.volume = 1;
+    vid3.play().catch(e => {
+        vid3.muted = true; 
+        vid3.play();
+    });
+  }
+
+  initScratch();
+  setTimeout(() => {
+    document.getElementById('pg3Notif').classList.add('show');
+  }, 1500);
+}
+
+/* ── SCRATCH CARD ── */
+function initScratch() {
+  const oldCanvas = document.getElementById('scratchCanvas');
+  const rect = document.getElementById('scratchReveal').getBoundingClientRect();
+  
+  // Clone to wipe old duplicated event listeners if looping
+  const canvas = oldCanvas.cloneNode(true);
+  oldCanvas.parentNode.replaceChild(canvas, oldCanvas);
+  
+  canvas.width  = Math.round(rect.width)  || 400;
+  canvas.height = Math.round(rect.height) || 160;
+
+  const ctx = canvas.getContext('2d');
+
+  // Gold foil gradient
+  const grd = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  grd.addColorStop(0,   '#c8953a');
+  grd.addColorStop(0.3, '#f5d57a');
+  grd.addColorStop(0.5, '#ffe49a');
+  grd.addColorStop(0.7, '#f5d57a');
+  grd.addColorStop(1,   '#c8953a');
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Shimmer lines
+  ctx.strokeStyle = 'rgba(255,255,220,0.18)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i < canvas.width; i += 18) {
+    ctx.beginPath();
+    ctx.moveTo(i, 0);
+    ctx.lineTo(i + canvas.height * 0.6, canvas.height);
+    ctx.stroke();
+  }
+
+  // "Scratch here" text
+  ctx.fillStyle = 'rgba(140,80,0,0.55)';
+  ctx.font = `bold ${Math.round(canvas.height * 0.14)}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('✦  Scratch to reveal  ✦', canvas.width / 2, canvas.height / 2);
+
+  let isDrawing = false;
+  let revealed = 0;
+
+  function getPos(e) {
+    const r = canvas.getBoundingClientRect();
+    const src = e.touches ? e.touches[0] : e;
+    return { x: (src.clientX - r.left) * (canvas.width / r.width),
+             y: (src.clientY - r.top)  * (canvas.height / r.height) };
+  }
+
+  function scratch(e) {
+    e.preventDefault();
+    if (!isDrawing) return;
+    const pos = getPos(e);
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, 28, 0, Math.PI * 2);
+    ctx.fill();
+    // check reveal %
+    revealed++;
+    if (revealed % 15 === 0) checkReveal(ctx, canvas);
+  }
+
+  canvas.addEventListener('mousedown',  e => { isDrawing = true; scratch(e); });
+  canvas.addEventListener('mousemove',  e => scratch(e));
+  canvas.addEventListener('mouseup',    () => isDrawing = false);
+  canvas.addEventListener('touchstart', e => { isDrawing = true; scratch(e); }, { passive: false });
+  canvas.addEventListener('touchmove',  e => scratch(e), { passive: false });
+  canvas.addEventListener('touchend',   () => isDrawing = false);
+}
+
+function checkReveal(ctx, canvas) {
+  if (scratchDone) return;
+  const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+  let cleared = 0;
+  for (let i = 3; i < data.length; i += 4) { if (data[i] === 0) cleared++; }
+  const pct = cleared / (canvas.width * canvas.height);
+  if (pct > 0.12) {
+    scratchDone = true;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    confettiBurst(50);
+    spawnFloaters(3, 14);
+  }
+}
+
+/* ═══════════════════════════════════
+   RESET
+═══════════════════════════════════ */
+function resetAll() {
+  pg1Step = 0;
+  scratchDone = false;
+  calAnimDone = false;
+
+  // 1. Reset text layout
+  const intro = document.getElementById('introText');
+  if (intro) {
+    intro.classList.remove('shrunk');
+    intro.classList.add('hide');
+  }
+
+  // 2. Reset calendar state
+  const cal = document.getElementById('calWidget');
+  if (cal) {
+    cal.classList.remove('show');
+    cal.style.display = '';
+    cal.style.opacity = '';
+    cal.style.transform = '';
+  }
+  const track = document.getElementById('calDatesTrack');
+  if (track) {
+    track.style.transform = 'translateX(0)';
+    track.innerHTML = '';
+  }
+
+  // 3. Reset envelope wrapper
+  const envWrap = document.getElementById('envWrap');
+  if (envWrap) {
+    envWrap.style.display = 'none';
+    envWrap.style.opacity = '';
+    envWrap.style.transform = '';
+    envWrap.style.pointerEvents = 'all';
+    envWrap.style.transition = '';
+  }
+
+  // Video reset
+  const vidWrap = document.getElementById('pg1VideoWrap');
+  if (vidWrap) {
+    vidWrap.classList.remove('show');
+    vidWrap.style.display = 'none';
+    const vid = document.getElementById('pg1Video');
+    if (vid) {
+      vid.pause();
+      vid.currentTime = 0;
+      vid.onended = null;
+    }
+  }
+
+  // 4. Reset page 1 button
+  const btn = document.getElementById('pg1Btn');
+  if (btn) {
+    setBtnText(btn, 'Wait for the date ✦');
+    btn.className = 'btn faded';
+    btn.style.display = 'none';
+    btn.style.opacity = '';
+    btn.style.transform = '';
+    btn.style.transition = '';
+  }
+
+  // Page 2 video reset
+  const vidWrap2 = document.getElementById('pg2VideoWrap');
+  if (vidWrap2) {
+    vidWrap2.classList.remove('show');
+    vidWrap2.style.display = 'none';
+    const vid2 = document.getElementById('pg2Video');
+    if (vid2) {
+      vid2.pause();
+      vid2.currentTime = 0;
+      vid2.onended = null;
+      vid2.removeAttribute('primed');
+    }
+  }
+
+  // Page 3 video reset
+  const vid3 = document.getElementById('pg3Video');
+  if (vid3) {
+    vid3.pause();
+    vid3.currentTime = 0;
+  }
+
+  // 6. Switch back to page 1 safely
+  const prevPage = document.getElementById('pg' + currentPage);
+  if (prevPage) prevPage.classList.remove('active');
+  
+  currentPage = 1;
+  const pg1 = document.getElementById('pg1');
+  if (pg1) pg1.classList.add('active');
+  
+  // 7. Re-trigger animations
+  spawnFloaters(1, 4);
+  initCalendarAnim();
+}
+
+/* ═══════════════════════════════════
+   SERVICE WORKER REGISTRATION
+═══════════════════════════════════ */
+initCalendarAnim();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+setTimeout(() => decorateElements('pg1'), 500);
+
+</script>
+</body>
+</html>
