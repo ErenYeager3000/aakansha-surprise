@@ -572,7 +572,7 @@
       
       <!-- Video Element -->
       <div class="video-wrap" id="pg1VideoWrap">
-        <video id="pg1Video" src="lv_0_20260411024006.mp4" playsinline></video>
+        <video id="pg1Video" playsinline preload="auto"><source src="lv_0_20260411024006.mp4" type="video/mp4"></video>
       </div>
 
       <!-- Interactive Calendar Widget -->
@@ -636,7 +636,7 @@
 
     <!-- PAGE 2 VIDEO -->
     <div class="video-wrap" id="pg2VideoWrap" style="margin-bottom: 90px; margin-top: 60px;">
-      <video id="pg2Video" src="lv_0_20260411114546.mp4" playsinline></video>
+      <video id="pg2Video" playsinline preload="auto"><source src="lv_0_20260411114546.mp4" type="video/mp4"></video>
     </div>
 
     <!-- Bottom UI layer -->
@@ -683,7 +683,7 @@
       <!-- Scratch Card -->
       <div class="scratch-wrap">
         <div class="scratch-reveal" id="scratchReveal">
-          <video id="pg3Video" src="New.mp4" playsinline loop style="width:100%; height:100%; object-fit:cover; border-radius:20px; pointer-events:none;"></video>
+          <video id="pg3Video" playsinline loop preload="auto" style="width:100%; height:100%; object-fit:cover; border-radius:20px; pointer-events:none;"><source src="New.mp4" type="video/mp4"></video>
         </div>
         <canvas id="scratchCanvas" width="400" height="160"></canvas>
       </div>
@@ -943,19 +943,63 @@ function goToPage(num) {
 /* ═══════════════════════════════════
    PAGE 1 LOGIC
 ═══════════════════════════════════ */
+/* ── ROBUST VIDEO PLAYER HELPER ── */
+/* 
+   withAudio = true  → try playing WITH sound first (works when called from user gesture)
+   withAudio = false → play muted (safe for non-gesture contexts like timers)
+*/
+function safePlayVideo(vid, withAudio) {
+  if (!vid) return Promise.reject('no video element');
+
+  function doPlay() {
+    if (withAudio) {
+      // Try unmuted first — this succeeds when called from a click handler
+      vid.muted = false;
+      vid.volume = 1;
+      return vid.play().catch(e => {
+        console.log('Unmuted play blocked, falling back to muted:', e);
+        vid.muted = true;
+        return vid.play();
+      });
+    } else {
+      vid.muted = true;
+      return vid.play().catch(e => {
+        console.log('Muted play failed:', e);
+      });
+    }
+  }
+
+  if (vid.readyState >= 2) {
+    return doPlay();
+  }
+  return new Promise((resolve) => {
+    vid.addEventListener('loadeddata', () => {
+      doPlay().then(resolve).catch(resolve);
+    }, { once: true });
+    setTimeout(() => {
+      doPlay().then(resolve).catch(resolve);
+    }, 1000);
+    if (vid.readyState === 0) vid.load();
+  });
+}
+
 function handleEnvTap() {
   if (pg1Step !== 0) return;
   pg1Step = 1;
 
-  // Prime the video with the trusted click
+  // Prime the video immediately on user tap (user gesture context = audio allowed)
   const vid = document.getElementById('pg1Video');
   if (vid) {
-    vid.muted = true;
+    vid.muted = false;
+    vid.volume = 1;
     vid.play().then(() => {
         vid.pause();
         vid.currentTime = 0;
-        vid.muted = false;
-    }).catch(e => console.log('Video prime failed:', e));
+    }).catch(e => {
+        console.log('Audio prime failed, trying muted:', e);
+        vid.muted = true;
+        vid.play().then(() => { vid.pause(); vid.currentTime = 0; }).catch(() => {});
+    });
   }
 
   const cal = document.getElementById('calWidget');
@@ -991,13 +1035,7 @@ function handleEnvTap() {
           vidWrap.style.display = 'flex';
           requestAnimationFrame(() => {
             vidWrap.classList.add('show');
-            vid.volume = 1;
-            vid.play().catch(e => {
-              console.error("Playback failed:", e);
-              // Fallback to muted autoplay if unmuted fails
-              vid.muted = true;
-              vid.play(); // Muted fallback usually succeeds without user gesture
-            });
+            safePlayVideo(vid, true); // Try with audio — was primed with user gesture above
           });
 
           spawnFloaters(1, 6);
@@ -1087,17 +1125,21 @@ function initPage2() {
   setTimeout(() => cb.classList.add('show'), 900);
 }
 
-// Prime Helper
+// Prime Helper — prime WITH audio on user click (user gesture = audio allowed)
 function primePg2Video() {
   const vid = document.getElementById('pg2Video');
   if (vid && !vid.hasAttribute('primed')) {
-    vid.muted = true;
+    vid.muted = false;
+    vid.volume = 1;
     vid.play().then(() => {
       vid.pause();
       vid.currentTime = 0;
-      vid.muted = false;
       vid.setAttribute('primed', 'true');
-    }).catch(e => console.log('pg2Video prime failed:', e));
+    }).catch(e => {
+      console.log('pg2Video audio prime failed, retrying muted:', e);
+      vid.muted = true;
+      vid.play().then(() => { vid.pause(); vid.currentTime = 0; vid.setAttribute('primed', 'true'); }).catch(() => {});
+    });
   }
 }
 
@@ -1154,12 +1196,7 @@ function unlockVideo() {
     vidWrap.style.display = 'flex';
     requestAnimationFrame(() => {
       vidWrap.classList.add('show');
-      vid.volume = 1;
-      vid.play().catch(e => {
-        console.log("pg2Video play failed:", e);
-        vid.muted = true;
-        vid.play();
-      });
+      safePlayVideo(vid, true); // Play with audio — primed with user gesture above
     });
 
     spawnFloaters(2, 6);
@@ -1190,11 +1227,7 @@ function initPage3() {
   // Start the video looping underneath the scratch foil
   const vid3 = document.getElementById('pg3Video');
   if (vid3) {
-    vid3.volume = 1;
-    vid3.play().catch(e => {
-        vid3.muted = true; 
-        vid3.play();
-    });
+    safePlayVideo(vid3, true); // Try with audio — user navigated here via tap
   }
 
   initScratch();
@@ -1387,14 +1420,19 @@ function resetAll() {
 }
 
 /* ═══════════════════════════════════
-   SERVICE WORKER REGISTRATION
+   INIT
 ═══════════════════════════════════ */
 initCalendarAnim();
 
+// Unregister any old service workers to prevent caching issues
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(r => r.unregister());
   });
+  // Clear all caches
+  if ('caches' in window) {
+    caches.keys().then(keys => keys.forEach(k => caches.delete(k)));
+  }
 }
 
 setTimeout(() => decorateElements('pg1'), 500);
