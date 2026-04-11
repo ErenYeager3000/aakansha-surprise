@@ -636,7 +636,7 @@
 
     <!-- PAGE 2 VIDEO -->
     <div class="video-wrap" id="pg2VideoWrap" style="margin-bottom: 90px; margin-top: 60px;">
-      <video id="pg2Video" playsinline preload="metadata"><source src="lv_0_20260411114546.mp4" type="video/mp4"></video>
+      <video id="pg2Video" playsinline preload="metadata"><source src="lv_0_20260411175930.mp4" type="video/mp4"></video>
     </div>
 
     <!-- Bottom UI layer -->
@@ -968,14 +968,17 @@ function safePlayVideo(vid, withAudio) {
   return new Promise((resolve) => {
     const onCanPlay = () => {
       vid.removeEventListener('canplay', onCanPlay);
+      vid.removeEventListener('canplaythrough', onCanPlay);
       attemptPlay().then(resolve);
     };
     vid.addEventListener('canplay', onCanPlay);
+    vid.addEventListener('canplaythrough', onCanPlay);
+    
     if (vid.readyState === 0) vid.load();
-    // Fallback
+    // Fallback: don't wait forever, try to play anyway
     setTimeout(() => {
       attemptPlay().then(resolve);
-    }, 2000);
+    }, 1500);
   });
 }
 
