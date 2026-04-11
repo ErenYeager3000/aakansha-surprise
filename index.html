@@ -244,9 +244,15 @@
     margin-top: 15px;
     margin-bottom: 5px;
   }
-  .video-wrap.show {
     opacity: 1;
     transform: scale(1) translateY(0);
+  }
+  #pg2VideoWrap {
+    max-width: 82%;
+    padding: 15px;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,120,180,0.15);
   }
   .video-wrap video {
     max-width: 100%;
@@ -312,6 +318,13 @@
     margin-top: 2px;
   }
   
+  /* GPU RELIEF FOR MOBILE VIDEO */
+  body.video-active .orbs { filter: blur(5px) !important; opacity: 0.3; }
+  body.video-active .cal-widget, 
+  body.video-active .btn, 
+  body.video-active .top-notif, 
+  body.video-active .scratch-wrap { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgba(0,0,0,0.7); }
+  
   /* ── HEARTBEAT LOADER ── */
   .heart-loader {
     margin-top: 30px;
@@ -321,6 +334,7 @@
     gap: 12px;
     opacity: 0;
     transition: opacity 0.5s ease;
+    z-index: 1000;
   }
   .heart-loader.show { display: flex; opacity: 1; }
   .heart-icon {
@@ -677,6 +691,12 @@
       <audio id="pg2Audio" preload="auto"><source src="Tu Chand Hai Ek Dhadakta Hua - Gehra Hua _ Dhurandhar.mp3" type="audio/mpeg"></audio>
     </div>
 
+    <!-- PAGE 2 LOADER -->
+    <div class="heart-loader" id="loader2" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+      <span class="heart-icon">💖</span>
+      <span class="heart-load-text">Creating the magic...</span>
+    </div>
+ 
     <!-- Bottom UI layer -->
     <div class="pg2-ui">
       <div class="explore-btn-wrap" id="exploreWrap">
@@ -717,6 +737,12 @@
 
     <div class="pg3-center">
       <div class="surprise-title">✦ &nbsp;Your Surprise&nbsp; ✦</div>
+      
+      <!-- PAGE 3 LOADER -->
+      <div class="heart-loader" id="loader3" style="margin: 30px 0;">
+        <span class="heart-icon">💖</span>
+        <span class="heart-load-text">Unlocking final gift...</span>
+      </div>
 
       <!-- Scratch Card -->
       <div class="scratch-wrap">
@@ -1060,81 +1086,61 @@ function handleEnvTap() {
     spawnFloaters(1, 4);
     confettiBurst(15);
     
-    // START PRELOADING
+    // START PRELOADING PAGE 1
     const loader = document.getElementById('heartLoader');
     loader.classList.add('show');
     
-    const assets = [
-      'lv_0_20260411024006.mp4', 
-      'lv_0_20260411175930.mp4', 
-      'lv_0_20260411182110.mp4',
-      'Tu Chand Hai Ek Dhadakta Hua - Gehra Hua _ Dhurandhar.mp3'
-    ];
-    
-    let loadedCount = 0;
-    const checkAllLoaded = () => {
-      loadedCount++;
-      if (loadedCount >= assets.length) {
-        processToVideo();
-      }
-    };
-
-    // Download in background
-    assets.forEach(url => {
-      fetch(url).then(r => r.blob()).then(checkAllLoaded).catch(() => {
-        // Fallback for weird network errors
-        setTimeout(checkAllLoaded, 2000); 
-      });
-    });
-
-    function processToVideo() {
-      // Small extra pause for smooth transition
-      setTimeout(() => {
-        loader.classList.remove('show');
+    // Download ONLY Vid 1
+    fetch('lv_0_20260411024006.mp4').then(r => r.blob()).then(() => {
         setTimeout(() => {
-          introText.classList.add('shrunk');
-          
-          // Wait for shrink animation to get going before proceeding
+          loader.classList.remove('show');
           setTimeout(() => {
-            const vidWrap = document.getElementById('pg1VideoWrap');
-            const vid = document.getElementById('pg1Video');
+            introText.classList.add('shrunk');
             
-            vidWrap.style.display = 'flex';
-            requestAnimationFrame(() => {
-              vidWrap.classList.add('show');
-              safePlayVideo(vid, true); 
-            });
+            // Wait for shrink animation to get going before proceeding
+            setTimeout(() => {
+              const vidWrap = document.getElementById('pg1VideoWrap');
+              const vid = document.getElementById('pg1Video');
+              
+              vidWrap.style.display = 'flex';
+              requestAnimationFrame(() => {
+                vidWrap.classList.add('show');
+                safePlayVideo(vid, true); 
+              });
 
-            spawnFloaters(1, 6);
-            confettiBurst(25);
+              spawnFloaters(1, 6);
+              confettiBurst(25);
 
-            vid.onended = () => {
-              if (pg1Step !== 2) {
-                pg1Step = 2;
-                const btn = document.getElementById('pg1Btn');
-                setBtnText(btn, "Tap to see what's waiting for you ✦");
-                btn.classList.remove('faded');
-                btn.classList.add('gold');
-                btn.style.opacity = '0';
-                btn.style.transform = 'scale(0.8) translateY(20px)';
-                btn.style.display = 'block';
+              vid.onended = () => {
+                if (pg1Step !== 2) {
+                  pg1Step = 2;
+                  const btn = document.getElementById('pg1Btn');
+                  setBtnText(btn, "Tap to see what's waiting for you ✦");
+                  btn.classList.remove('faded');
+                  btn.classList.add('gold');
+                  btn.style.opacity = '0';
+                  btn.style.transform = 'scale(0.8) translateY(20px)';
+                  btn.style.display = 'block';
 
-                requestAnimationFrame(() => {
-                  btn.style.transition = 'all 0.6s cubic-bezier(0.34, 1.35, 0.64, 1)';
-                  btn.style.opacity = '1';
-                  btn.style.transform = 'scale(1) translateY(0)';
-                });
-                spawnFloaters(1, 8);
-                
-                // Now start looping
-                vid.loop = true;
-                vid.play().catch(() => {});
-              }
-            };
+                  requestAnimationFrame(() => {
+                    btn.style.transition = 'all 0.6s cubic-bezier(0.34, 1.35, 0.64, 1)';
+                    btn.style.opacity = '1';
+                    btn.style.transform = 'scale(1) translateY(0)';
+                  });
+                  spawnFloaters(1, 8);
+                  
+                  // Now start looping
+                  vid.loop = true;
+                  vid.play().catch(() => {});
+                }
+              };
+            }, 500);
           }, 500);
-        }, 500);
-      }, 1000);
-    }
+        }, 1000);
+    }).catch(() => {
+        // Fallback
+        setTimeout(() => { loader.classList.remove('show'); }, 2000);
+    });
   }, 500);
 }
 
@@ -1200,20 +1206,19 @@ function initPage2() {
   setTimeout(() => cb.classList.add('show'), 900);
 }
 
-// Prime Helper — prime WITH audio on user click (user gesture = audio allowed)
+// Prime Helper
 function primePg2Video() {
   const vid = document.getElementById('pg2Video');
   if (vid && !vid.hasAttribute('primed')) {
     const oldVol = vid.volume;
     vid.muted = false;
-    vid.volume = 0; // Prevent clicking sound
+    vid.volume = 0;
     vid.play().then(() => {
       vid.pause();
-      vid.currentTime = 0.1; // Hardware kickstart
+      vid.currentTime = 0.1;
       vid.volume = oldVol;
       vid.setAttribute('primed', 'true');
     }).catch(e => {
-      console.log('pg2Video audio prime failed, retrying muted:', e);
       vid.muted = true;
       vid.play().then(() => { vid.pause(); vid.currentTime = 0.1; vid.setAttribute('primed', 'true'); }).catch(() => {});
     });
@@ -1261,52 +1266,52 @@ function unlockVideo() {
   if (pg2State > 0) return;
   pg2State = 1;
 
-  // Hide notification
   document.getElementById('pg2Notif').classList.remove('show');
 
-  // Hide choice buttons
   const cb = document.getElementById('choiceBtns');
   cb.style.transition = 'opacity 0.4s';
   cb.style.opacity = '0';
   setTimeout(() => { cb.style.display = 'none'; }, 450);
 
-  // Show video
-  setTimeout(() => {
-    const vidWrap = document.getElementById('pg2VideoWrap');
-    const vid = document.getElementById('pg2Video');
-    vidWrap.style.display = 'flex';
-    requestAnimationFrame(() => {
-      vidWrap.classList.add('show');
-      safePlayVideo(vid, true); // Play with audio — primed with user gesture above
-      const aud = document.getElementById('pg2Audio');
-      if (aud) {
-        aud.currentTime = 0;
-        aud.play().catch(() => {});
-      }
-    });
+  const loader = document.getElementById('loader2');
+  loader.classList.add('show');
 
-    spawnFloaters(2, 6);
-    confettiBurst(25);
-
-    vid.onended = () => {
-      const ew = document.getElementById('exploreWrap');
-      if (ew.style.display !== 'block') {
-        ew.style.display = 'block';
-        requestAnimationFrame(() => {
-          ew.classList.add('show');
-        });
-        spawnFloaters(2, 5);
-      }
-      // Start looping
-      vid.loop = true;
-      vid.play().catch(() => {});
-      const aud = document.getElementById('pg2Audio');
-      if (aud) {
-        aud.currentTime = 0;
-        aud.play().catch(() => {});
-      }
-    };
-  }, 500);
+  const assets = ['lv_0_20260411175930.mp4', 'Tu Chand Hai Ek Dhadakta Hua - Gehra Hua _ Dhurandhar.mp3'];
+  let loaded = 0;
+  const finish = () => {
+    loaded++;
+    if(loaded >= assets.length) {
+      setTimeout(() => {
+        loader.classList.remove('show');
+        setTimeout(() => {
+          const vidWrap = document.getElementById('pg2VideoWrap');
+          const vid = document.getElementById('pg2Video');
+          vidWrap.style.display = 'flex';
+          document.body.classList.add('video-active');
+          requestAnimationFrame(() => {
+            vidWrap.classList.add('show');
+            safePlayVideo(vid, true);
+            const aud = document.getElementById('pg2Audio');
+            if (aud) { aud.currentTime = 0; aud.play().catch(() => {}); }
+          });
+          spawnFloaters(2, 6);
+          confettiBurst(25);
+          vid.onended = () => {
+            const ew = document.getElementById('exploreWrap');
+            if (ew.style.display !== 'block') {
+              ew.style.display = 'block';
+              requestAnimationFrame(() => { ew.classList.add('show'); });
+              spawnFloaters(2, 5);
+            }
+            vid.loop = true; vid.play().catch(() => {});
+            const aud = document.getElementById('pg2Audio');
+            if (aud) { aud.currentTime = 0; aud.play().catch(() => {}); }
+          };
+        }, 400);
+      }, 800);
+    }
+  };
+  assets.forEach(url => fetch(url).then(r => r.blob()).then(finish).catch(() => setTimeout(finish, 1000)));
 }
 
 /* ═══════════════════════════════════
@@ -1316,16 +1321,19 @@ function initPage3() {
   scratchDone = false;
   document.getElementById('pg3Notif').classList.remove('show');
   
-  // Start the video looping underneath the scratch foil
-  const vid3 = document.getElementById('pg3Video');
-  if (vid3) {
-    safePlayVideo(vid3, true); // Try with audio — user navigated here via tap
-  }
+  const loader = document.getElementById('loader3');
+  loader.classList.add('show');
 
-  initScratch();
-  setTimeout(() => {
-    document.getElementById('pg3Notif').classList.add('show');
-  }, 1500);
+  fetch('lv_0_20260411182110.mp4').then(r => r.blob()).then(() => {
+    loader.classList.remove('show');
+    initScratch();
+    const vid3 = document.getElementById('pg3Video');
+    if (vid3) { safePlayVideo(vid3, true); }
+    setTimeout(() => { document.getElementById('pg3Notif').classList.add('show'); }, 1500);
+  }).catch(() => {
+    loader.classList.remove('show');
+    initScratch();
+  });
 }
 
 /* ── SCRATCH CARD ── */
@@ -1437,6 +1445,10 @@ function checkReveal(ctx, canvas) {
   }
 }
 
+function stopVideoEffects() {
+  document.body.classList.remove('video-active');
+}
+
 /* ═══════════════════════════════════
    RESET
 ═══════════════════════════════════ */
@@ -1453,8 +1465,12 @@ function resetAll() {
   }
 
   // Reset preloader
-  const loader = document.getElementById('heartLoader');
-  if (loader) loader.classList.remove('show');
+  const loaders = ['heartLoader', 'loader2', 'loader3'];
+  loaders.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.classList.remove('show');
+  });
+  document.body.classList.remove('video-active');
 
   // 2. Reset calendar state
   const cal = document.getElementById('calWidget');
