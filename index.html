@@ -572,7 +572,7 @@
       
       <!-- Video Element -->
       <div class="video-wrap" id="pg1VideoWrap">
-        <video id="pg1Video" playsinline loop preload="auto"><source src="lv_0_20260411024006.mp4" type="video/mp4"></video>
+        <video id="pg1Video" playsinline preload="auto"><source src="lv_0_20260411024006.mp4" type="video/mp4"></video>
       </div>
 
       <!-- Interactive Calendar Widget -->
@@ -636,7 +636,7 @@
 
     <!-- PAGE 2 VIDEO -->
     <div class="video-wrap" id="pg2VideoWrap" style="margin-bottom: 90px; margin-top: 60px;">
-      <video id="pg2Video" playsinline loop preload="auto"><source src="lv_0_20260411114546.mp4" type="video/mp4"></video>
+      <video id="pg2Video" playsinline preload="metadata"><source src="lv_0_20260411175930.mp4" type="video/mp4"></video>
     </div>
 
     <!-- Bottom UI layer -->
@@ -683,7 +683,7 @@
       <!-- Scratch Card -->
       <div class="scratch-wrap">
         <div class="scratch-reveal" id="scratchReveal">
-          <video id="pg3Video" playsinline loop preload="auto" style="width:100%; height:100%; object-fit:cover; border-radius:20px; pointer-events:none;"><source src="New.mp4" type="video/mp4"></video>
+          <video id="pg3Video" playsinline preload="none" style="width:100%; height:100%; object-fit:cover; border-radius:20px; pointer-events:none;"><source src="New Project 4 [249FFA4].mp4" type="video/mp4"></video>
         </div>
         <canvas id="scratchCanvas" width="400" height="160"></canvas>
       </div>
@@ -961,18 +961,21 @@ function safePlayVideo(vid, withAudio) {
     });
   };
 
-  if (vid.readyState >= 2) {
+  if (vid.readyState >= 3) { // Wait for HAVE_FUTURE_DATA
     return attemptPlay();
   }
   
   return new Promise((resolve) => {
     const onCanPlay = () => {
       vid.removeEventListener('canplay', onCanPlay);
+      vid.removeEventListener('canplaythrough', onCanPlay);
       attemptPlay().then(resolve);
     };
     vid.addEventListener('canplay', onCanPlay);
-    vid.load();
-    // Fallback
+    vid.addEventListener('canplaythrough', onCanPlay);
+    
+    if (vid.readyState === 0) vid.load();
+    // Fallback: don't wait forever, try to play anyway
     setTimeout(() => {
       attemptPlay().then(resolve);
     }, 1500);
@@ -986,15 +989,17 @@ function handleEnvTap() {
   // Prime the video immediately on user tap (user gesture context = audio allowed)
   const vid = document.getElementById('pg1Video');
   if (vid) {
+    const oldVol = vid.volume;
     vid.muted = false;
-    vid.volume = 1;
+    vid.volume = 0; // Prevent clicking sound
     vid.play().then(() => {
         vid.pause();
-        vid.currentTime = 0;
+        vid.currentTime = 0.1; // Kickstart decoder
+        vid.volume = oldVol;
     }).catch(e => {
         console.log('Audio prime failed, trying muted:', e);
         vid.muted = true;
-        vid.play().then(() => { vid.pause(); vid.currentTime = 0; }).catch(() => {});
+        vid.play().then(() => { vid.pause(); vid.currentTime = 0.1; }).catch(() => {});
     });
   }
 
@@ -1037,29 +1042,33 @@ function handleEnvTap() {
           spawnFloaters(1, 6);
           confettiBurst(25);
 
-          vid.onended = null; // We use loop attribute now
-          // Wait for a loop to pass before showing the button (using timeupdate for better mobile sync)
-          const checkProgress = () => {
-            if (vid.currentTime > 0.5 && pg1Step !== 2) {
-                pg1Step = 2;
-                const btn = document.getElementById('pg1Btn');
-                setBtnText(btn, "Tap to see what's waiting for you ✦");
-                btn.classList.remove('faded');
-                btn.classList.add('gold');
-                btn.style.opacity = '0';
-                btn.style.transform = 'scale(0.8) translateY(20px)';
-                btn.style.display = 'block';
+          vid.onended = () => {
+            if (pg1Step !== 2) {
+              pg1Step = 2;
+              const btn = document.getElementById('pg1Btn');
+              setBtnText(btn, "Tap to see what's waiting for you ✦");
+              btn.classList.remove('faded');
+              btn.classList.add('gold');
+              btn.style.opacity = '0';
+              btn.style.transform = 'scale(0.8) translateY(20px)';
+              btn.style.display = 'block';
 
-                requestAnimationFrame(() => {
-                  btn.style.transition = 'all 0.6s cubic-bezier(0.34, 1.35, 0.64, 1)';
-                  btn.style.opacity = '1';
-                  btn.style.transform = 'scale(1) translateY(0)';
-                });
-                spawnFloaters(1, 8);
-                vid.removeEventListener('timeupdate', checkProgress);
+              // Background load Page 2 video while user reads Page 1
+              const vid2 = document.getElementById('pg2Video');
+              if (vid2) vid2.load();
+
+              requestAnimationFrame(() => {
+                btn.style.transition = 'all 0.6s cubic-bezier(0.34, 1.35, 0.64, 1)';
+                btn.style.opacity = '1';
+                btn.style.transform = 'scale(1) translateY(0)';
+              });
+              spawnFloaters(1, 8);
+              
+              // Now start looping
+              vid.loop = true;
+              vid.play().catch(() => {});
             }
           };
-          vid.addEventListener('timeupdate', checkProgress);
       }, 500);
 
     }, 3000);
@@ -1127,16 +1136,18 @@ function initPage2() {
 function primePg2Video() {
   const vid = document.getElementById('pg2Video');
   if (vid && !vid.hasAttribute('primed')) {
+    const oldVol = vid.volume;
     vid.muted = false;
-    vid.volume = 1;
+    vid.volume = 0; // Prevent clicking sound
     vid.play().then(() => {
       vid.pause();
-      vid.currentTime = 0;
+      vid.currentTime = 0.1; // Kickstart decoder
+      vid.volume = oldVol;
       vid.setAttribute('primed', 'true');
     }).catch(e => {
       console.log('pg2Video audio prime failed, retrying muted:', e);
       vid.muted = true;
-      vid.play().then(() => { vid.pause(); vid.currentTime = 0; vid.setAttribute('primed', 'true'); }).catch(() => {});
+      vid.play().then(() => { vid.pause(); vid.currentTime = 0.1; vid.setAttribute('primed', 'true'); }).catch(() => {});
     });
   }
 }
@@ -1200,21 +1211,23 @@ function unlockVideo() {
     spawnFloaters(2, 6);
     confettiBurst(25);
 
-    // Show explore button after small delay
-    const checkProgress2 = () => {
-      if (vid.currentTime > 0.5) {
-        const ew = document.getElementById('exploreWrap');
-        if (ew.style.display !== 'block') {
-          ew.style.display = 'block';
-          requestAnimationFrame(() => {
-            ew.classList.add('show');
-          });
-          spawnFloaters(2, 5);
-        }
-        vid.removeEventListener('timeupdate', checkProgress2);
+    vid.onended = () => {
+      const ew = document.getElementById('exploreWrap');
+      if (ew.style.display !== 'block') {
+        ew.style.display = 'block';
+        requestAnimationFrame(() => {
+          ew.classList.add('show');
+        });
+        spawnFloaters(2, 5);
+        
+        // Background load Page 3 video while user is on Page 2
+        const vid3 = document.getElementById('pg3Video');
+        if (vid3) vid3.load();
       }
+      // Start looping
+      vid.loop = true;
+      vid.play().catch(() => {});
     };
-    vid.addEventListener('timeupdate', checkProgress2);
   }, 500);
 }
 
@@ -1332,8 +1345,13 @@ function checkReveal(ctx, canvas) {
     const vid = document.getElementById('pg3Video');
     if (vid) {
       vid.muted = false;
-      vid.volume = 1;
-      vid.play().catch(() => {});
+      vid.currentTime = 0; // Ensure it starts from beginning
+      vid.play().then(() => {
+        vid.onended = () => {
+          vid.loop = true;
+          vid.play().catch(() => {});
+        };
+      }).catch(() => {});
     }
 
     confettiBurst(55);
@@ -1390,6 +1408,7 @@ function resetAll() {
       vid.pause();
       vid.currentTime = 0;
       vid.onended = null;
+      vid.loop = false;
     }
   }
 
@@ -1414,6 +1433,7 @@ function resetAll() {
       vid2.pause();
       vid2.currentTime = 0;
       vid2.onended = null;
+      vid2.loop = false;
       vid2.removeAttribute('primed');
     }
   }
