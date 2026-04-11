@@ -961,7 +961,7 @@ function safePlayVideo(vid, withAudio) {
     });
   };
 
-  if (vid.readyState >= 2) {
+  if (vid.readyState >= 3) { // Wait for HAVE_FUTURE_DATA
     return attemptPlay();
   }
   
@@ -991,12 +991,12 @@ function handleEnvTap() {
     vid.volume = 0; // Prevent clicking sound
     vid.play().then(() => {
         vid.pause();
-        vid.currentTime = 0;
+        vid.currentTime = 0.1; // Kickstart decoder
         vid.volume = oldVol;
     }).catch(e => {
         console.log('Audio prime failed, trying muted:', e);
         vid.muted = true;
-        vid.play().then(() => { vid.pause(); vid.currentTime = 0; }).catch(() => {});
+        vid.play().then(() => { vid.pause(); vid.currentTime = 0.1; }).catch(() => {});
     });
   }
 
@@ -1138,13 +1138,13 @@ function primePg2Video() {
     vid.volume = 0; // Prevent clicking sound
     vid.play().then(() => {
       vid.pause();
-      vid.currentTime = 0;
+      vid.currentTime = 0.1; // Kickstart decoder
       vid.volume = oldVol;
       vid.setAttribute('primed', 'true');
     }).catch(e => {
       console.log('pg2Video audio prime failed, retrying muted:', e);
       vid.muted = true;
-      vid.play().then(() => { vid.pause(); vid.currentTime = 0; vid.setAttribute('primed', 'true'); }).catch(() => {});
+      vid.play().then(() => { vid.pause(); vid.currentTime = 0.1; vid.setAttribute('primed', 'true'); }).catch(() => {});
     });
   }
 }
@@ -1202,7 +1202,10 @@ function unlockVideo() {
     vidWrap.style.display = 'flex';
     requestAnimationFrame(() => {
       vidWrap.classList.add('show');
-      safePlayVideo(vid, true); // Play with audio — primed with user gesture above
+      // Extra delay for transition to settle before playing
+      setTimeout(() => {
+        safePlayVideo(vid, true);
+      }, 150);
     });
 
     spawnFloaters(2, 6);
