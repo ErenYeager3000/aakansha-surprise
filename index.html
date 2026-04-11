@@ -636,7 +636,7 @@
 
     <!-- PAGE 2 VIDEO -->
     <div class="video-wrap" id="pg2VideoWrap" style="margin-bottom: 90px; margin-top: 60px;">
-      <video id="pg2Video" playsinline preload="metadata"><source src="lv_0_20260411175930.mp4" type="video/mp4"></video>
+      <video id="pg2Video" playsinline loop preload="auto"><source src="lv_0_20260411175930.mp4" type="video/mp4"></video>
     </div>
 
     <!-- Bottom UI layer -->
@@ -683,7 +683,7 @@
       <!-- Scratch Card -->
       <div class="scratch-wrap">
         <div class="scratch-reveal" id="scratchReveal">
-          <video id="pg3Video" playsinline preload="none" style="width:100%; height:100%; object-fit:cover; border-radius:20px; pointer-events:none;"><source src="New Project 4 [249FFA4].mp4" type="video/mp4"></video>
+          <video id="pg3Video" playsinline loop preload="auto" style="width:100%; height:100%; object-fit:cover; border-radius:20px; pointer-events:none;"><source src="New Project 4 [249FFA4].mp4" type="video/mp4"></video>
         </div>
         <canvas id="scratchCanvas" width="400" height="160"></canvas>
       </div>
@@ -961,24 +961,21 @@ function safePlayVideo(vid, withAudio) {
     });
   };
 
-  if (vid.readyState >= 3) { // Wait for HAVE_FUTURE_DATA
+  if (vid.readyState >= 2) {
     return attemptPlay();
   }
   
   return new Promise((resolve) => {
     const onCanPlay = () => {
       vid.removeEventListener('canplay', onCanPlay);
-      vid.removeEventListener('canplaythrough', onCanPlay);
       attemptPlay().then(resolve);
     };
     vid.addEventListener('canplay', onCanPlay);
-    vid.addEventListener('canplaythrough', onCanPlay);
-    
     if (vid.readyState === 0) vid.load();
-    // Fallback: don't wait forever, try to play anyway
+    // Fallback
     setTimeout(() => {
       attemptPlay().then(resolve);
-    }, 1500);
+    }, 2000);
   });
 }
 
@@ -994,12 +991,12 @@ function handleEnvTap() {
     vid.volume = 0; // Prevent clicking sound
     vid.play().then(() => {
         vid.pause();
-        vid.currentTime = 0.1; // Kickstart decoder
+        vid.currentTime = 0;
         vid.volume = oldVol;
     }).catch(e => {
         console.log('Audio prime failed, trying muted:', e);
         vid.muted = true;
-        vid.play().then(() => { vid.pause(); vid.currentTime = 0.1; }).catch(() => {});
+        vid.play().then(() => { vid.pause(); vid.currentTime = 0; }).catch(() => {});
     });
   }
 
@@ -1052,10 +1049,6 @@ function handleEnvTap() {
               btn.style.opacity = '0';
               btn.style.transform = 'scale(0.8) translateY(20px)';
               btn.style.display = 'block';
-
-              // Background load Page 2 video while user reads Page 1
-              const vid2 = document.getElementById('pg2Video');
-              if (vid2) vid2.load();
 
               requestAnimationFrame(() => {
                 btn.style.transition = 'all 0.6s cubic-bezier(0.34, 1.35, 0.64, 1)';
@@ -1141,13 +1134,13 @@ function primePg2Video() {
     vid.volume = 0; // Prevent clicking sound
     vid.play().then(() => {
       vid.pause();
-      vid.currentTime = 0.1; // Kickstart decoder
+      vid.currentTime = 0;
       vid.volume = oldVol;
       vid.setAttribute('primed', 'true');
     }).catch(e => {
       console.log('pg2Video audio prime failed, retrying muted:', e);
       vid.muted = true;
-      vid.play().then(() => { vid.pause(); vid.currentTime = 0.1; vid.setAttribute('primed', 'true'); }).catch(() => {});
+      vid.play().then(() => { vid.pause(); vid.currentTime = 0; vid.setAttribute('primed', 'true'); }).catch(() => {});
     });
   }
 }
@@ -1219,10 +1212,6 @@ function unlockVideo() {
           ew.classList.add('show');
         });
         spawnFloaters(2, 5);
-        
-        // Background load Page 3 video while user is on Page 2
-        const vid3 = document.getElementById('pg3Video');
-        if (vid3) vid3.load();
       }
       // Start looping
       vid.loop = true;
