@@ -1286,7 +1286,6 @@ function unlockVideo() {
             if (aud) { 
               aud.muted = false;
               aud.volume = 1;
-              aud.currentTime = 0; 
               aud.play().catch(() => {}); 
             }
           });
@@ -1320,12 +1319,20 @@ function initPage3() {
   const loader = document.getElementById('loader3');
   loader.classList.add('show');
 
+  // Pre-download Page 3 Video for zero-lag reveal
   fetch('lv_0_20260411182110.mp4').then(r => r.blob()).then(() => {
-    loader.classList.remove('show');
-    initScratch();
-    const vid3 = document.getElementById('pg3Video');
-    if (vid3) { safePlayVideo(vid3, true); }
-    setTimeout(() => { document.getElementById('pg3Notif').classList.add('show'); }, 1500);
+    setTimeout(() => {
+      loader.classList.remove('show');
+      setTimeout(() => {
+        initScratch();
+        const vid3 = document.getElementById('pg3Video');
+        if (vid3) { 
+          vid3.style.opacity = '0'; // Keep hidden under gold foil
+          safePlayVideo(vid3, true); 
+        }
+        setTimeout(() => { document.getElementById('pg3Notif').classList.add('show'); }, 1500);
+      }, 400);
+    }, 800);
   }).catch(() => {
     loader.classList.remove('show');
     initScratch();
