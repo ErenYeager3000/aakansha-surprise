@@ -311,6 +311,37 @@
     text-transform: uppercase;
     margin-top: 2px;
   }
+  
+  /* ── HEARTBEAT LOADER ── */
+  .heart-loader {
+    margin-top: 30px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .heart-loader.show { display: flex; opacity: 1; }
+  .heart-icon {
+    font-size: 32px;
+    filter: drop-shadow(0 0 10px rgba(255, 20, 147, 0.8));
+    animation: heart-beat 1.2s infinite;
+  }
+  .heart-load-text {
+    font-size: 10px;
+    color: #f9c0d8;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+  @keyframes heart-beat {
+    0% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(255, 20, 147, 0.5)); }
+    15% { transform: scale(1.25); filter: drop-shadow(0 0 15px rgba(255, 20, 147, 0.9)); }
+    30% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(255, 20, 147, 0.5)); }
+    45% { transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(255, 20, 147, 0.8)); }
+    100% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(255, 20, 147, 0.5)); }
+  }
 
 
 
@@ -568,6 +599,12 @@
         <div class="hb-text">Happy Birthday</div>
         <div class="name-text">Aakansha</div>
         <div class="subtitle">Some surprises await you</div>
+        
+        <!-- Loading State -->
+        <div class="heart-loader" id="heartLoader">
+          <span class="heart-icon">💖</span>
+          <span class="heart-load-text">Preparing your surprise...</span>
+        </div>
       </div>
       
       <!-- Video Element -->
@@ -636,7 +673,8 @@
 
     <!-- PAGE 2 VIDEO -->
     <div class="video-wrap" id="pg2VideoWrap" style="margin-bottom: 90px; margin-top: 60px;">
-      <video id="pg2Video" playsinline preload="auto"><source src="lv_0_20260411175930.mp4" type="video/mp4"></video>
+      <video id="pg2Video" playsinline preload="auto" muted><source src="lv_0_20260411175930.mp4" type="video/mp4"></video>
+      <audio id="pg2Audio" preload="auto"><source src="Tu Chand Hai Ek Dhadakta Hua - Gehra Hua _ Dhurandhar.mp3" type="audio/mpeg"></audio>
     </div>
 
     <!-- Bottom UI layer -->
@@ -924,6 +962,8 @@ function goToPage(num) {
   if (currentPage === 2 && num !== 2) {
     const vid2 = document.getElementById('pg2Video');
     if (vid2) vid2.pause();
+    const aud2 = document.getElementById('pg2Audio');
+    if (aud2) aud2.pause();
   }
 
   const prev = document.getElementById('pg' + currentPage);
@@ -991,7 +1031,7 @@ function handleEnvTap() {
     vid.volume = 0; // Prevent clicking sound
     vid.play().then(() => {
         vid.pause();
-        vid.currentTime = 0.1; // Hardware kickstart
+        vid.currentTime = 0;
         vid.volume = oldVol;
     }).catch(e => {
         console.log('Audio prime failed, trying muted:', e);
@@ -1020,51 +1060,81 @@ function handleEnvTap() {
     spawnFloaters(1, 4);
     confettiBurst(15);
     
-    // Wait 3 seconds
-    setTimeout(() => {
-      // Shrink and move text up
-      introText.classList.add('shrunk');
-      
-        // Wait for shrink animation to get going before proceeding
+    // START PRELOADING
+    const loader = document.getElementById('heartLoader');
+    loader.classList.add('show');
+    
+    const assets = [
+      'lv_0_20260411024006.mp4', 
+      'lv_0_20260411175930.mp4', 
+      'lv_0_20260411182110.mp4',
+      'Tu Chand Hai Ek Dhadakta Hua - Gehra Hua _ Dhurandhar.mp3'
+    ];
+    
+    let loadedCount = 0;
+    const checkAllLoaded = () => {
+      loadedCount++;
+      if (loadedCount >= assets.length) {
+        processToVideo();
+      }
+    };
+
+    // Download in background
+    assets.forEach(url => {
+      fetch(url).then(r => r.blob()).then(checkAllLoaded).catch(() => {
+        // Fallback for weird network errors
+        setTimeout(checkAllLoaded, 2000); 
+      });
+    });
+
+    function processToVideo() {
+      // Small extra pause for smooth transition
+      setTimeout(() => {
+        loader.classList.remove('show');
         setTimeout(() => {
-          const vidWrap = document.getElementById('pg1VideoWrap');
-          const vid = document.getElementById('pg1Video');
+          introText.classList.add('shrunk');
           
-          vidWrap.style.display = 'flex';
-          requestAnimationFrame(() => {
-            vidWrap.classList.add('show');
-            safePlayVideo(vid, true); // Try with audio — was primed with user gesture above
-          });
+          // Wait for shrink animation to get going before proceeding
+          setTimeout(() => {
+            const vidWrap = document.getElementById('pg1VideoWrap');
+            const vid = document.getElementById('pg1Video');
+            
+            vidWrap.style.display = 'flex';
+            requestAnimationFrame(() => {
+              vidWrap.classList.add('show');
+              safePlayVideo(vid, true); 
+            });
 
-          spawnFloaters(1, 6);
-          confettiBurst(25);
+            spawnFloaters(1, 6);
+            confettiBurst(25);
 
-          vid.onended = () => {
-            if (pg1Step !== 2) {
-              pg1Step = 2;
-              const btn = document.getElementById('pg1Btn');
-              setBtnText(btn, "Tap to see what's waiting for you ✦");
-              btn.classList.remove('faded');
-              btn.classList.add('gold');
-              btn.style.opacity = '0';
-              btn.style.transform = 'scale(0.8) translateY(20px)';
-              btn.style.display = 'block';
+            vid.onended = () => {
+              if (pg1Step !== 2) {
+                pg1Step = 2;
+                const btn = document.getElementById('pg1Btn');
+                setBtnText(btn, "Tap to see what's waiting for you ✦");
+                btn.classList.remove('faded');
+                btn.classList.add('gold');
+                btn.style.opacity = '0';
+                btn.style.transform = 'scale(0.8) translateY(20px)';
+                btn.style.display = 'block';
 
-              requestAnimationFrame(() => {
-                btn.style.transition = 'all 0.6s cubic-bezier(0.34, 1.35, 0.64, 1)';
-                btn.style.opacity = '1';
-                btn.style.transform = 'scale(1) translateY(0)';
-              });
-              spawnFloaters(1, 8);
-              
-              // Now start looping
-              vid.loop = true;
-              vid.play().catch(() => {});
-            }
-          };
-      }, 500);
-
-    }, 3000);
+                requestAnimationFrame(() => {
+                  btn.style.transition = 'all 0.6s cubic-bezier(0.34, 1.35, 0.64, 1)';
+                  btn.style.opacity = '1';
+                  btn.style.transform = 'scale(1) translateY(0)';
+                });
+                spawnFloaters(1, 8);
+                
+                // Now start looping
+                vid.loop = true;
+                vid.play().catch(() => {});
+              }
+            };
+          }, 500);
+        }, 500);
+      }, 1000);
+    }
   }, 500);
 }
 
@@ -1089,6 +1159,11 @@ function initPage2() {
     if (vid2) {
       vid2.pause();
       vid2.currentTime = 0;
+    }
+    const aud2 = document.getElementById('pg2Audio');
+    if (aud2) {
+      aud2.pause();
+      aud2.currentTime = 0;
     }
   }
 
@@ -1140,8 +1215,12 @@ function primePg2Video() {
     }).catch(e => {
       console.log('pg2Video audio prime failed, retrying muted:', e);
       vid.muted = true;
-      vid.play().then(() => { vid.pause(); vid.currentTime = 0; vid.setAttribute('primed', 'true'); }).catch(() => {});
+      vid.play().then(() => { vid.pause(); vid.currentTime = 0.1; vid.setAttribute('primed', 'true'); }).catch(() => {});
     });
+  }
+  const aud = document.getElementById('pg2Audio');
+  if (aud) {
+    aud.play().then(() => { aud.pause(); aud.currentTime = 0; }).catch(() => {});
   }
 }
 
@@ -1199,6 +1278,11 @@ function unlockVideo() {
     requestAnimationFrame(() => {
       vidWrap.classList.add('show');
       safePlayVideo(vid, true); // Play with audio — primed with user gesture above
+      const aud = document.getElementById('pg2Audio');
+      if (aud) {
+        aud.currentTime = 0;
+        aud.play().catch(() => {});
+      }
     });
 
     spawnFloaters(2, 6);
@@ -1216,6 +1300,11 @@ function unlockVideo() {
       // Start looping
       vid.loop = true;
       vid.play().catch(() => {});
+      const aud = document.getElementById('pg2Audio');
+      if (aud) {
+        aud.currentTime = 0;
+        aud.play().catch(() => {});
+      }
     };
   }, 500);
 }
@@ -1363,6 +1452,10 @@ function resetAll() {
     intro.classList.add('hide');
   }
 
+  // Reset preloader
+  const loader = document.getElementById('heartLoader');
+  if (loader) loader.classList.remove('show');
+
   // 2. Reset calendar state
   const cal = document.getElementById('calWidget');
   if (cal) {
@@ -1424,6 +1517,11 @@ function resetAll() {
       vid2.onended = null;
       vid2.loop = false;
       vid2.removeAttribute('primed');
+    }
+    const aud2 = document.getElementById('pg2Audio');
+    if (aud2) {
+      aud2.pause();
+      aud2.currentTime = 0;
     }
   }
 
