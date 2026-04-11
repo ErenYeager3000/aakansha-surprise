@@ -236,7 +236,10 @@
   .intro-text-wrap.shrunk { transform: scale(0.4) translateY(-10px); margin-top: -30px; margin-bottom: -40px; }
 
   .video-wrap {
-    width: 100%;
+    width: 88%;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
     flex: 1;
     min-height: 0;
     display: none;
@@ -954,8 +957,11 @@ function safePlayVideo(vid, withAudio) {
   if (withAudio) {
     vid.muted = false;
     vid.volume = 1;
+    // Explicitly set attributes too for some mobile browsers
+    vid.removeAttribute('muted');
   } else {
     vid.muted = true;
+    vid.setAttribute('muted', '');
   }
 
   const attemptPlay = () => {
@@ -1198,6 +1204,8 @@ function unlockVideo() {
   const vid = document.getElementById('pg2Video');
   
   // Play IMMEDIATELY to preserve user gesture
+  vid.muted = false;
+  vid.volume = 1;
   safePlayVideo(vid, true);
 
   // Hide notification
