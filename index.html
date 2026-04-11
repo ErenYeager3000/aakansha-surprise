@@ -683,7 +683,7 @@
       <!-- Scratch Card -->
       <div class="scratch-wrap">
         <div class="scratch-reveal" id="scratchReveal">
-          <video id="pg3Video" playsinline loop preload="auto" style="width:100%; height:100%; object-fit:cover; border-radius:20px; pointer-events:none;"><source src="New Project 4 [249FFA4].mp4" type="video/mp4"></video>
+          <video id="pg3Video" playsinline loop preload="auto" style="width:100%; height:100%; object-fit:cover; border-radius:20px; pointer-events:none;"><source src="lv_0_20260411182110.mp4" type="video/mp4"></video>
         </div>
         <canvas id="scratchCanvas" width="400" height="160"></canvas>
       </div>
@@ -991,7 +991,7 @@ function handleEnvTap() {
     vid.volume = 0; // Prevent clicking sound
     vid.play().then(() => {
         vid.pause();
-        vid.currentTime = 0;
+        vid.currentTime = 0.1; // Hardware kickstart
         vid.volume = oldVol;
     }).catch(e => {
         console.log('Audio prime failed, trying muted:', e);
@@ -1134,7 +1134,7 @@ function primePg2Video() {
     vid.volume = 0; // Prevent clicking sound
     vid.play().then(() => {
       vid.pause();
-      vid.currentTime = 0;
+      vid.currentTime = 0.1; // Hardware kickstart
       vid.volume = oldVol;
       vid.setAttribute('primed', 'true');
     }).catch(e => {
