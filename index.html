@@ -428,9 +428,9 @@
     padding: 0 20px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
   }
-  .btn-row { display: flex; flex-direction: column; gap: 14px; width: 100%; align-items: center; text-align: center; }
+  .btn-row { display: flex; flex-direction: column; gap: 10px; width: 100%; align-items: center; text-align: center; }
 
   /* Choice buttons slide up */
   .choice-btns {
@@ -572,7 +572,7 @@
       
       <!-- Video Element -->
       <div class="video-wrap" id="pg1VideoWrap">
-        <video id="pg1Video" playsinline preload="auto"><source src="lv_0_20260411024006.mp4" type="video/mp4"></video>
+        <video id="pg1Video" playsinline loop preload="auto"><source src="lv_0_20260411024006.mp4" type="video/mp4"></video>
       </div>
 
       <!-- Interactive Calendar Widget -->
@@ -636,7 +636,7 @@
 
     <!-- PAGE 2 VIDEO -->
     <div class="video-wrap" id="pg2VideoWrap" style="margin-bottom: 90px; margin-top: 60px;">
-      <video id="pg2Video" playsinline preload="auto"><source src="lv_0_20260411114546.mp4" type="video/mp4"></video>
+      <video id="pg2Video" playsinline loop preload="auto"><source src="lv_0_20260411114546.mp4" type="video/mp4"></video>
     </div>
 
     <!-- Bottom UI layer -->
@@ -943,43 +943,39 @@ function goToPage(num) {
 /* ═══════════════════════════════════
    PAGE 1 LOGIC
 ═══════════════════════════════════ */
-/* ── ROBUST VIDEO PLAYER HELPER ── */
-/* 
-   withAudio = true  → try playing WITH sound first (works when called from user gesture)
-   withAudio = false → play muted (safe for non-gesture contexts like timers)
-*/
 function safePlayVideo(vid, withAudio) {
   if (!vid) return Promise.reject('no video element');
 
-  function doPlay() {
-    if (withAudio) {
-      // Try unmuted first — this succeeds when called from a click handler
-      vid.muted = false;
-      vid.volume = 1;
-      return vid.play().catch(e => {
-        console.log('Unmuted play blocked, falling back to muted:', e);
-        vid.muted = true;
-        return vid.play();
-      });
-    } else {
-      vid.muted = true;
-      return vid.play().catch(e => {
-        console.log('Muted play failed:', e);
-      });
-    }
+  if (withAudio) {
+    vid.muted = false;
+    vid.volume = 1;
+  } else {
+    vid.muted = true;
   }
 
+  const attemptPlay = () => {
+    return vid.play().catch(e => {
+      console.log('Play failed, retrying muted:', e);
+      vid.muted = true;
+      return vid.play();
+    });
+  };
+
   if (vid.readyState >= 2) {
-    return doPlay();
+    return attemptPlay();
   }
+  
   return new Promise((resolve) => {
-    vid.addEventListener('loadeddata', () => {
-      doPlay().then(resolve).catch(resolve);
-    }, { once: true });
+    const onCanPlay = () => {
+      vid.removeEventListener('canplay', onCanPlay);
+      attemptPlay().then(resolve);
+    };
+    vid.addEventListener('canplay', onCanPlay);
+    vid.load();
+    // Fallback
     setTimeout(() => {
-      doPlay().then(resolve).catch(resolve);
-    }, 1000);
-    if (vid.readyState === 0) vid.load();
+      attemptPlay().then(resolve);
+    }, 1500);
   });
 }
 
@@ -1041,27 +1037,29 @@ function handleEnvTap() {
           spawnFloaters(1, 6);
           confettiBurst(25);
 
-          vid.onended = () => {
-            if (pg1Step !== 2) {
-              pg1Step = 2;
-              const btn = document.getElementById('pg1Btn');
-              setBtnText(btn, "Tap to see what's waiting for you ✦");
-              btn.classList.remove('faded');
-              btn.classList.add('gold');
-              btn.style.opacity = '0';
-              btn.style.transform = 'scale(0.8) translateY(20px)';
-              btn.style.display = 'block';
+          vid.onended = null; // We use loop attribute now
+          // Wait for a loop to pass before showing the button (using timeupdate for better mobile sync)
+          const checkProgress = () => {
+            if (vid.currentTime > 0.5 && pg1Step !== 2) {
+                pg1Step = 2;
+                const btn = document.getElementById('pg1Btn');
+                setBtnText(btn, "Tap to see what's waiting for you ✦");
+                btn.classList.remove('faded');
+                btn.classList.add('gold');
+                btn.style.opacity = '0';
+                btn.style.transform = 'scale(0.8) translateY(20px)';
+                btn.style.display = 'block';
 
-              requestAnimationFrame(() => {
-                btn.style.transition = 'all 0.6s cubic-bezier(0.34, 1.35, 0.64, 1)';
-                btn.style.opacity = '1';
-                btn.style.transform = 'scale(1) translateY(0)';
-              });
-
-              spawnFloaters(1, 8);
+                requestAnimationFrame(() => {
+                  btn.style.transition = 'all 0.6s cubic-bezier(0.34, 1.35, 0.64, 1)';
+                  btn.style.opacity = '1';
+                  btn.style.transform = 'scale(1) translateY(0)';
+                });
+                spawnFloaters(1, 8);
+                vid.removeEventListener('timeupdate', checkProgress);
             }
-            vid.play(); // Loop manually
           };
+          vid.addEventListener('timeupdate', checkProgress);
       }, 500);
 
     }, 3000);
@@ -1202,18 +1200,21 @@ function unlockVideo() {
     spawnFloaters(2, 6);
     confettiBurst(25);
 
-    // Show explore button after one loop
-    vid.onended = () => {
-      const ew = document.getElementById('exploreWrap');
-      if (ew.style.display !== 'block') {
-        ew.style.display = 'block';
-        requestAnimationFrame(() => {
-          ew.classList.add('show');
-        });
-        spawnFloaters(2, 5);
+    // Show explore button after small delay
+    const checkProgress2 = () => {
+      if (vid.currentTime > 0.5) {
+        const ew = document.getElementById('exploreWrap');
+        if (ew.style.display !== 'block') {
+          ew.style.display = 'block';
+          requestAnimationFrame(() => {
+            ew.classList.add('show');
+          });
+          spawnFloaters(2, 5);
+        }
+        vid.removeEventListener('timeupdate', checkProgress2);
       }
-      vid.play(); // manual loop
     };
+    vid.addEventListener('timeupdate', checkProgress2);
   }, 500);
 }
 
