@@ -1090,56 +1090,46 @@ function handleEnvTap() {
     const loader = document.getElementById('heartLoader');
     loader.classList.add('show');
     
-    // Download ONLY Vid 1
-    fetch('lv_0_20260411024006.mp4').then(r => r.blob()).then(() => {
+    function startPage1Video() {
         setTimeout(() => {
           loader.classList.remove('show');
           setTimeout(() => {
             introText.classList.add('shrunk');
-            
-            // Wait for shrink animation to get going before proceeding
             setTimeout(() => {
               const vidWrap = document.getElementById('pg1VideoWrap');
               const vid = document.getElementById('pg1Video');
-              
               vidWrap.style.display = 'flex';
               requestAnimationFrame(() => {
                 vidWrap.classList.add('show');
                 safePlayVideo(vid, true); 
               });
-
               spawnFloaters(1, 6);
               confettiBurst(25);
-
               vid.onended = () => {
                 if (pg1Step !== 2) {
                   pg1Step = 2;
                   const btn = document.getElementById('pg1Btn');
                   setBtnText(btn, "Tap to see what's waiting for you ✦");
-                  btn.classList.remove('faded');
-                  btn.classList.add('gold');
-                  btn.style.opacity = '0';
-                  btn.style.transform = 'scale(0.8) translateY(20px)';
+                  btn.classList.remove('faded'); btn.classList.add('gold');
+                  btn.style.opacity = '0'; btn.style.transform = 'scale(0.8) translateY(20px)';
                   btn.style.display = 'block';
-
                   requestAnimationFrame(() => {
                     btn.style.transition = 'all 0.6s cubic-bezier(0.34, 1.35, 0.64, 1)';
-                    btn.style.opacity = '1';
-                    btn.style.transform = 'scale(1) translateY(0)';
+                    btn.style.opacity = '1'; btn.style.transform = 'scale(1) translateY(0)';
                   });
                   spawnFloaters(1, 8);
-                  
-                  // Now start looping
-                  vid.loop = true;
-                  vid.play().catch(() => {});
+                  vid.loop = true; vid.play().catch(() => {});
                 }
               };
             }, 500);
           }, 500);
-        }, 1000);
-    }).catch(() => {
-        // Fallback
-        setTimeout(() => { loader.classList.remove('show'); }, 2000);
+        }, 800);
+    }
+
+    // Download Vid 1
+    fetch('lv_0_20260411024006.mp4').then(r => r.blob()).then(startPage1Video).catch(() => {
+        // Essential Fallback: Start even if download fails/takes too long
+        startPage1Video();
     });
   }, 500);
 }
