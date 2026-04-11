@@ -236,10 +236,7 @@
   .intro-text-wrap.shrunk { transform: scale(0.4) translateY(-10px); margin-top: -30px; margin-bottom: -40px; }
 
   .video-wrap {
-    width: 88%;
-    max-width: 420px;
-    margin-left: auto;
-    margin-right: auto;
+    width: 100%;
     flex: 1;
     min-height: 0;
     display: none;
@@ -251,6 +248,13 @@
     z-index: 5; 
     margin-top: 15px;
     margin-bottom: 5px;
+  }
+  /* Specific sizing for Page 2 to have gaps on sides */
+  #pg2VideoWrap {
+    width: 88%;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
   }
   .video-wrap.show {
     opacity: 1;
